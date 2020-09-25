@@ -1,18 +1,20 @@
 # Mapman
 Pacman clone
 
+## Game state
 data MapMan = MapMap {
   maze      :: Maze,
   pacman    :: PacMan,
-  blinky    :: Blinky,
-  pinky     :: Pinky,
-  inky      :: Inky,
-  clyde     :: Clyde,
+  blinky    :: Ghost,
+  pinky     :: Ghost,
+  inky      :: Ghost,
+  clyde     :: Ghost,
   score     :: Int,
   highScore :: Int,
   lives     :: Int
 }
 
+# The Maze
 data Point = Point Float Float
 type Maze  = Map Point Field
 
@@ -22,14 +24,25 @@ data Field = Empty
            | Palette
            | Fruit
 
+## Pacman and the ghosts
+data PMState      = Normal | Powered 
+data GhostState   = Normal | Scared
+data GhostName    = Pinky | Inky | Blinky | Clyde
+data GhostControl = Computer | Player
+
+data PacMan     = PacMan Point PMState
+data Ghost      = Ghost Point GhostName GhostControl GhostState 
+
 class Sprite s where
   move :: s -> Point -> s  -- point is PacMan's position
 
 instance Sprite PacMan where
   move = (IO stuff)
 
-instance Sprite Pinky where
-  move = (Pinky's moving strategy) 
+instance Sprite Ghost where
+  move (Ghost _ Pinky  _ _) = (Pinky's moving strategy)
+  move (Ghost _ Blinky _ _) = (Blinky's moving strategy)
+  ...
 
 
 # Design
@@ -72,4 +85,3 @@ We are planning to implement the following optional requirements.
 
 *Multiplayer*
     - The red ghosts can optionally be controlled by another player using WASD as input. 
-
