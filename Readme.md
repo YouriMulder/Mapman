@@ -2,6 +2,7 @@
 Pacman clone
 
 ## Game state
+```Haskell
 data MapMan = MapMap {
   maze      :: Maze,
   pacman    :: PacMan,
@@ -13,18 +14,24 @@ data MapMan = MapMap {
   highScore :: Int,
   lives     :: Int
 }
+```
 
 # The Maze
+```Haskell
 data Point = Point Float Float
 type Maze  = Map Point Field
+```
 
 Inside the maze we store the fields as follows
+```Haskell
 data Field = Empty
            | Wall
            | Palette
            | Fruit
+```
 
 ## Pacman and the ghosts
+```Haskell
 data PMState      = Normal | Powered 
 data GhostState   = Normal | Scared
 data GhostName    = Pinky | Inky | Blinky | Clyde
@@ -43,7 +50,7 @@ instance Sprite Ghost where
   move (Ghost _ Pinky  _ _) = (Pinky's moving strategy)
   move (Ghost _ Blinky _ _) = (Blinky's moving strategy)
   ...
-
+```
 
 # Design
 ## 2.4 Implementation of the Minimum Requirements
