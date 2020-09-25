@@ -54,41 +54,41 @@ instance Sprite Ghost where
 
 # Design
 ## 2.4 Implementation of the Minimum Requirements
-*Player* 
-    The user controls Pacman using the arrow keys. 
-*Enemies* 
-    In the game are mulitple enemies. 
-    The enemies are the ghosts named: blinky, pinky, inky andclyde
-*Randomness* 
-    Once all the pallets are eaten, the game will continue as an endless mode. 
-    The pallets will be placed at a random time on a random location.
-*Animation*
-    When fruit is comsumed by Pacman the ghost will start to flicker.
-    A long as the animation is present the ghosts can be eaten by pacman.
-*Pause* 
-    Pressing ESC will pause the game, the game will continue when ESC is pressed again.
-*Interaction with the file system*
-    The interaction with the file system will be implemented by storing the maze as a file.
-    The maze will be loaded on startup.
+**Player** <br />
+    The user controls Pacman using the arrow keys. <br />
+**Enemies** <br />
+    In the game are mulitple enemies. <br />
+    The enemies are the ghosts named: blinky, pinky, inky andclyde. <br />
+**Randomness** <br />
+    Once all the pallets are eaten, the game will continue as an endless mode. <br />
+    The pallets will be placed at a random time on a random location. <br />
+**Animation** <br />
+    When fruit is comsumed by Pacman the ghost will start to flicker. <br />
+    A long as the animation is present the ghosts can be eaten by pacman. <br />
+**Pause** <br />
+    Pressing ESC will pause the game, the game will continue when ESC is pressed again. <br />
+**Interaction with the file system** <br />
+    The interaction with the file system will be implemented by storing the maze as a file. <br />
+    The maze will be loaded on startup. <br />
     
 
 ## 2.5 Implementation of the optional Requirements
-We are planning to implement the following optional requirements.
-*Custom levels*
-    - We will implement custom levels, the custom levels will be loaded from a file.
-    - The custom maze must be the same dimentions as the original maze.
-    - Fields which are left empty (space) will be filled with walls.
-    - If a row or column does not have a ending or starting wall then there must NOT be a wall on the opposite.
-    Empty           = e
-    Wall            = w
-    Palette         = p
-    Fruit           = f
-    Pacman location = P
-    Ghost house     = G
-    - 
-*Use JSON to save the full game state.*
-    - We will implement a way to store the current gamestate to a file.
-    - We will implement a way to load a gamestate stored in a file.
+We are planning to implement the following optional requirements. <br />
+**Custom levels** <br />
+    - We will implement custom levels, the custom levels will be loaded from a file. <br />
+    - The custom maze must be the same dimentions as the original maze. <br />
+    - Fields which are left empty (space) will be filled with walls. <br />
+    - If a row or column does not have a ending or starting wall then there must NOT be a wall on the opposite. <br />
+    Empty           = e <br />
+    Wall            = w <br />
+    Palette         = p <br />
+    Fruit           = f <br />
+    Pacman location = P <br />
+    Ghost house     = G <br />
 
-*Multiplayer*
-    - The red ghosts can optionally be controlled by another player using WASD as input. 
+**Use JSON to save the full game state.** <br />
+    - We will implement a way to store the current gamestate to a file. <br />
+    - We will implement a way to load a gamestate stored in a file. <br />
+
+**Multiplayer** <br />
+    - The red ghosts can optionally be controlled by another player using WASD as input.  <br />
