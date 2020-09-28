@@ -1,12 +1,12 @@
-module Default where
+module Model where
 
-import Data.Map
+import qualified Data.Map as M
 
 {- BASE DATA -}
 
 -- default point datatype
 data Point = Point Int Int
-    deriving (Eq, Show)
+    deriving (Ord, Eq, Show)
 
 type Direction = (Int, Int)
 
@@ -28,7 +28,7 @@ data Field = Empty
            | GhostHouse
         deriving (Show)
 
-type Maze  = Map Point Field
+type Maze  = M.Map Point Field
 
 {- SPRITE DATA -}
 
@@ -45,7 +45,7 @@ data Ghost  = Ghost Point Direction GhostName GhostControl GhostState
 class Sprite s where
     move :: s -> Point -> s  -- point is PacMan's position
 
-data MapMan = MapMan {
+data GameState = GameState {
     maze      :: Maze,
     pacman    :: PacMan,
     blinky    :: Ghost,

@@ -1,8 +1,6 @@
 module Serial where
 
-import Default
-
-file = "level.mm"
+import Model
 
 -- todo: match on constant for maze width
 readLine :: Int -> String -> [(Point, Field)]
@@ -22,9 +20,7 @@ readLine y s = readLine' 0 s
                                 _   -> Wall  -- this will automatically handle the newline case for us
 
 
-readMaze :: IO [(Point, Field)]
-readMaze = do 
-        content <- readFile file
-        let read = concat $ map (uncurry readLine) (zip [0..mazeHeight] $ (lines content) ++ repeat [])  -- fill missing lines with []
-        return read
+stringToMaze :: String -> [(Point, Field)]
+stringToMaze content =  
+        concat $ map (uncurry readLine) (zip [0..mazeHeight] $ (lines content) ++ repeat [])  -- fill missing lines with []
         
