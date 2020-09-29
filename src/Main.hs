@@ -22,7 +22,7 @@ main = do
     let g4 = Ghost (Model.Point 0 0) (0,0) Clyde Computer Scary
 
     let gameState = GameState maze pacMan g1 g2 g3 g4 0 0 10 False
-    playIO (InWindow "MapMan" (400, 400) (0, 0)) -- Or FullScreen
+    playIO (InWindow "MapMan" (windowWidth, windowHeight) (0, 0)) -- Or FullScreen
               black            -- Background color
               10               -- Frames per second
               gameState        -- Initial state

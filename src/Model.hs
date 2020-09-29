@@ -2,6 +2,12 @@ module Model where
 
 import qualified Data.Map as M
 
+windowWidth  :: Int
+windowWidth  = 400
+
+windowHeight :: Int
+windowHeight = 400
+
 {- BASE DATA -}
 
 -- default point datatype
@@ -39,6 +45,9 @@ data GhostName    = Pinky | Inky | Blinky | Clyde
 data GhostControl = Computer | Player
 
 data PacMan = PacMan Point Direction PMState
+getPacManCellPos :: PacMan -> Point
+getPacManCellPos (PacMan p _ _) = p
+
 data Ghost  = Ghost Point Direction GhostName GhostControl GhostState 
 
 -- default type class for sprites (PacMan and Ghost will inherit these)
