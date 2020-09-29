@@ -1,25 +1,30 @@
 module Main where
 
-import Serial
+import Maze
 import Model
 import Controller
 import View
 
-import qualified Data.Map as M
 import Graphics.Gloss.Interface.IO.Game
+
+import Data.Set as S
 
 file = "level.mm"
 
 main :: IO()
 main = do 
     contents <- readFile file
-    let mazeContent = stringToMaze contents
-    let maze = M.fromList mazeContent
-    let pacMan = PacMan (Model.Point 0 0) (0,0) Normal
-    let g1 = Ghost (Model.Point 0 0) (0,0) Pinky Computer Scary
-    let g2 = Ghost (Model.Point 0 0) (0,0) Inky Computer Scary
-    let g3 = Ghost (Model.Point 0 0) (0,0) Blinky Computer Scary
-    let g4 = Ghost (Model.Point 0 0) (0,0) Clyde Computer Scary
+    let maze = stringToMaze contents
+    let pacMan = PacMan (Model.Point 0 0) West Normal
+    let g1 = Ghost (Model.Point 0 0) North Pinky Computer Scary
+    let g2 = Ghost (Model.Point 0 0) North Inky Computer Scary
+    let g3 = Ghost (Model.Point 0 0) North Blinky Computer Scary
+    let g4 = Ghost (Model.Point 0 0) North Clyde Computer Scary
+
+    putStr "Starting debug checks\n"
+    putStr "Is maze valid: "
+    print $ validMaze maze
+    putStr "Done with debug checks\n"
 
     let gameState = GameState maze pacMan g1 g2 g3 g4 0 0 10 False
     playIO (InWindow "MapMan" (400, 400) (0, 0)) -- Or FullScreen

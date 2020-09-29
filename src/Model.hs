@@ -8,16 +8,21 @@ import qualified Data.Map as M
 data Point = Point Int Int
     deriving (Ord, Eq, Show)
 
-type Direction = (Int, Int)
+data Direction = North | South | East | West
+    deriving (Eq, Show, Enum)
+
+directions = [North ..]
 
 
 {- MAZE DATA -}
-
-mazeWidth :: Int
 mazeWidth = 28
-
-mazeHeight :: Int
 mazeHeight = 31
+
+moveFrom :: Point -> Direction -> Point
+moveFrom (Point x y) North = (Point x $ (y + 1) `mod` mazeHeight)
+moveFrom (Point x y) South = (Point x $ (y - 1) `mod` mazeHeight)
+moveFrom (Point x y) East  = (Point ((x + 1) `mod` mazeWidth) y)
+moveFrom (Point x y) West  = (Point ((x - 1) `mod` mazeWidth) y)
 
 -- info on what is on the ground in a certain location
 data Field = Empty
@@ -26,7 +31,7 @@ data Field = Empty
            | Fruit
            | PacmanStart
            | GhostHouse
-        deriving (Show)
+        deriving (Eq, Show, Enum)
 
 type Maze  = M.Map Point Field
 
