@@ -1,12 +1,19 @@
-module Default where
+module Model where
 
-import Data.Map
+import qualified Data.Map as M
+import Graphics.Gloss.Data.Picture
+
+windowWidth  :: Int
+windowWidth  = 400
+
+windowHeight :: Int
+windowHeight = 400
 
 {- BASE DATA -}
 
 -- default point datatype
 data Point = Point Int Int
-    deriving (Eq, Show)
+    deriving (Ord, Eq, Show)
 
 type Direction = (Int, Int)
 
@@ -19,6 +26,12 @@ mazeWidth = 28
 mazeHeight :: Int
 mazeHeight = 31
 
+cellWidth :: Float
+cellWidth = fromIntegral windowWidth / fromIntegral mazeWidth
+
+cellHeight :: Float
+cellHeight = fromIntegral windowHeight / fromIntegral mazeHeight
+
 -- info on what is on the ground in a certain location
 data Field = Empty
            | Wall
@@ -28,7 +41,7 @@ data Field = Empty
            | GhostHouse
         deriving (Show)
 
-type Maze  = Map Point Field
+type Maze  = M.Map Model.Point Field
 
 {- SPRITE DATA -}
 
@@ -38,14 +51,19 @@ data GhostState   = Scary  | Scared                 -- Ghost's state
 data GhostName    = Pinky | Inky | Blinky | Clyde
 data GhostControl = Computer | Player
 
-data PacMan = PacMan Point Direction PMState
-data Ghost  = Ghost Point Direction GhostName GhostControl GhostState 
+data PacMan = PacMan Model.Point Direction PMState
+
+data Ghost  = Ghost Model.Point Direction GhostName GhostControl GhostState 
 
 -- default type class for sprites (PacMan and Ghost will inherit these)
-class Sprite s where
-    move :: s -> Point -> s  -- point is PacMan's position
+class GridLocated a where 
+    getLocation :: a -> Model.Point
 
-data MapMan = MapMan {
+class (GridLocated s) => Sprite s where
+    move :: s -> Model.Point -> s  -- point is PacMan's position
+    render :: s -> Picture
+
+data GameState = GameState {
     maze      :: Maze,
     pacman    :: PacMan,
     blinky    :: Ghost,
