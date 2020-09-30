@@ -16,10 +16,10 @@ main = do
     let mazeContent = stringToMaze contents
     let maze = M.fromList mazeContent
     let pacMan = PacMan (Model.Point 0 0) (0,0) Normal
-    let g1 = Ghost (Model.Point 0 0) (0,0) Pinky Computer Scary
-    let g2 = Ghost (Model.Point 0 0) (0,0) Inky Computer Scary
-    let g3 = Ghost (Model.Point 0 0) (0,0) Blinky Computer Scary
-    let g4 = Ghost (Model.Point 0 0) (0,0) Clyde Computer Scary
+    let g1 = Ghost (Model.Point 1 1) (0,0) Pinky Computer Scary
+    let g2 = Ghost (Model.Point 1 2) (0,0) Inky Computer Scary
+    let g3 = Ghost (Model.Point 2 10) (0,0) Blinky Computer Scary
+    let g4 = Ghost (Model.Point 11 11) (0,0) Clyde Computer Scary
 
     let gameState = GameState maze pacMan g1 g2 g3 g4 0 0 10 False
     playIO (InWindow "MapMan" (windowWidth, windowHeight) (0, 0)) -- Or FullScreen

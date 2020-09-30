@@ -4,44 +4,39 @@ import Model
 
 import Graphics.Gloss
 import Data.List
+import Pacman
+import Blinky
 
 view :: GameState -> IO Picture
 view = return . viewPure
 
 viewPure :: GameState -> Picture
-viewPure gameState = vPacMan
+viewPure gameState = Pictures [vPacMan, vBlinky, vPinky, vInky, vClyde]
     where
-        vPacMan = viewPacMan $ pacman gameState
+        vPacMan = renderInGrid $ pacman gameState
+        vBlinky = renderInGrid $ blinky gameState
+        vPinky  = renderInGrid $ pinky  gameState
+        vInky   = renderInGrid $ inky   gameState
+        vClyde  = renderInGrid $ clyde  gameState
 
-viewPacMan :: PacMan -> Picture
-viewPacMan pacMan = 
-    translateInGrid pacManCircleInMiddle (getPacManCellPos pacMan)
-    where
-        pacManCircleInMiddle = translateCellOrigin (cellWidth, cellWidth) pacManCircle
-        pacManCircle = Color yellow $ Circle cellWidth
+renderInGrid :: (Sprite a) => a -> Picture
+renderInGrid a = translateInGrid (render a) a
 
-cellWidth :: Float
-cellWidth = fromIntegral windowWidth / fromIntegral mazeWidth
-
-cellHeight :: Float
-cellHeight = fromIntegral windowHeight / fromIntegral mazeHeight
-
-cellToPixel :: Model.Point -> (Float, Float)
-cellToPixel (Point cellX cellY) = 
-    (fromIntegral cellX * cellWidth, fromIntegral cellY * cellHeight) 
-
-translateInGrid :: Picture -> Model.Point -> Picture
-translateInGrid picture cell = 
-    translateTopLeft pixelPosition picture
+translateInGrid :: (GridLocated a) => Picture -> a -> Picture
+translateInGrid picture a = translateCellOrigin (cellWidth/2, cellHeight/2) (translateTopLeft pixelPosition picture)
     where 
-        pixelPosition = cellToPixel cell 
+        pixelPosition = getCellPixelTopLeft (getLocation a)
+
+getCellPixelTopLeft :: Model.Point -> (Float, Float)
+getCellPixelTopLeft (Point cellX cellY) = 
+    (fromIntegral cellX * cellWidth, fromIntegral cellY * cellHeight) 
 
 translateTopLeft :: (Float, Float) -> Picture -> Picture
 translateTopLeft (pixelX, pixelY) =
     translate newPixelX newPixelY
     where 
         newPixelX = pixelX - (fromIntegral windowWidth  / 2)
-        newPixelY = pixelY + (fromIntegral windowHeight / 2)
+        newPixelY = (fromIntegral windowHeight / 2) - pixelY
 
 translateCellOrigin :: (Float, Float) -> Picture -> Picture
 translateCellOrigin (width, height) = translate width (-1 * height)
