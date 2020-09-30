@@ -39,16 +39,30 @@ type Maze  = M.Map Point Field
 
 data PMState      = Normal | Powered                -- Pac-Man's state
 
-data GhostState   = Scary  | Scared                 -- Ghost's state
+data GhostState   = Scatter Int                     -- Ghost's state.
+                  | Scary   Int                     -- Ghosts are scattering for a certain number of seconds, then chasing for a certain number of seconds
+                  | Scared
 data GhostName    = Pinky | Inky | Blinky | Clyde
 data GhostControl = Computer | Player
 
-data PacMan = PacMan Point Direction PMState
-data Ghost  = Ghost Point Direction GhostName GhostControl GhostState 
+data PacMan = PacMan {
+    ppos   :: Point,
+    pdir   :: Direction,
+    pstate :: PMState
+}
+
+data Ghost  = Ghost {
+    gpos     :: Point,
+    gdir     :: Direction,
+    gname    :: GhostName,
+    gcontrol :: GhostControl,
+    gstate   :: GhostState
+}
 
 -- default type class for sprites (PacMan and Ghost will inherit these)
 class Sprite s where
-    move :: s -> Point -> s  -- point is PacMan's position
+    move   :: s -> Point -> Maze -> Point  -- First point is a target. For Pacman, this target will be ignored
+    render :: s -> a
 
 data GameState = GameState {
     maze      :: Maze,

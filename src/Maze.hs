@@ -58,14 +58,17 @@ reachable start m = S.toList $ fst $ traverse (S.empty, S.singleton start)
                       in traverse (nxt, S.fromList [q | p <- S.toList searching, q <- validMoves p m, not $ S.member q nxt])
 
 validMaze :: Maze -> Bool
-validMaze m = mazeSize          m 
-              && onePacmanStart m
-              && oneGhostHouse  m
-              && traversable    m
+validMaze m = mazeSize            m 
+              && onePacmanStart   m
+              && oneGhostHouse    m
+              && traversable      m
+              && (not . deadEnds) m
 
-        where mazeSize       m = M.size m == mazeWidth * mazeHeight && all (flip M.member m) [(Point x y) | x <- [0..mazeWidth - 1], y <- [0..mazeHeight - 1]]  -- all points must be set
+        where validPoints      = [(Point x y) | x <- [0..mazeWidth - 1], y <- [0..mazeHeight - 1]]
+              mazeSize       m = M.size m == mazeWidth * mazeHeight && all (flip M.member m) validPoints  -- all points must be set
               onePacmanStart m = count PacmanStart m == 1
               oneGhostHouse  m = count GhostHouse  m == 1
               traversable    m = S.fromList (reachable (find PacmanStart m) m) == S.fromList (getRest Wall m)
+              deadEnds       m = any (\p -> (length $ validMoves p m) < 2) validPoints
 
 
