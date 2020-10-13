@@ -1,13 +1,12 @@
 module Main where
 
-import Maze
 import Model
+import Maze
+import Ghosts
 import Controller
 import View
 
 import Graphics.Gloss.Interface.IO.Game
-
-import Data.Set as S
 
 file = "level.mm"
 
@@ -16,14 +15,15 @@ main = do
     contents <- readFile file
     let maze = stringToMaze contents
     let pacMan = PacMan (Model.Point 0 0) West Normal
-    let g1 = Ghost (Model.Point 0 0) North Pinky Computer Scary
-    let g2 = Ghost (Model.Point 0 0) North Inky Computer Scary
-    let g3 = Ghost (Model.Point 0 0) North Blinky Computer Scary
-    let g4 = Ghost (Model.Point 0 0) North Clyde Computer Scary
+    let g1 = Ghost (Model.Point 0 0) North Pinky Computer (Scatter 10)
+    let g2 = Ghost (Model.Point 0 0) North Inky Computer (Scatter 10)
+    let g3 = Ghost (Model.Point 0 0) North Blinky Computer (Scatter 10)
+    let g4 = Ghost (Model.Point 0 0) North Clyde Computer (Scatter 10)
 
     putStr "Starting debug checks\n"
     putStr "Is maze valid: "
     print $ validMaze maze
+    
     putStr "Done with debug checks\n"
 
     let gameState = GameState maze pacMan g1 g2 g3 g4 0 0 10 False

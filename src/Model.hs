@@ -8,21 +8,31 @@ import qualified Data.Map as M
 data Point = Point Int Int
     deriving (Ord, Eq, Show)
 
-data Direction = North | South | East | West
-    deriving (Eq, Show, Enum)
+-- order is needed for determining ghost move decision
+data Direction = North | West | South | East
+    deriving (Eq, Ord, Show, Enum)
 
+directions :: [Direction]
 directions = [North ..]
 
 
 {- MAZE DATA -}
+mazeWidth :: Int
 mazeWidth = 28
+
+mazeHeight :: Int
 mazeHeight = 31
 
+
+dist :: Point -> Point -> Int
+-- Euclidian distance
+dist (Point x y) (Point u v) = (x - u) ^ 2 + (y - v)^2
+
 moveFrom :: Point -> Direction -> Point
-moveFrom (Point x y) North = (Point x $ (y + 1) `mod` mazeHeight)
-moveFrom (Point x y) South = (Point x $ (y - 1) `mod` mazeHeight)
-moveFrom (Point x y) East  = (Point ((x + 1) `mod` mazeWidth) y)
-moveFrom (Point x y) West  = (Point ((x - 1) `mod` mazeWidth) y)
+moveFrom (Point x y) North = Point x $ (y + 1) `mod` mazeHeight
+moveFrom (Point x y) South = Point x $ (y - 1) `mod` mazeHeight
+moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeWidth) y
+moveFrom (Point x y) West  = Point ((x - 1) `mod` mazeWidth) y
 
 -- info on what is on the ground in a certain location
 data Field = Empty
@@ -41,7 +51,8 @@ data PMState      = Normal | Powered                -- Pac-Man's state
 
 data GhostState   = Scatter Int                     -- Ghost's state.
                   | Scary   Int                     -- Ghosts are scattering for a certain number of seconds, then chasing for a certain number of seconds
-                  | Scared
+                  | Scared  Int
+                  | Dead
 data GhostName    = Pinky | Inky | Blinky | Clyde
 data GhostControl = Computer | Player
 
