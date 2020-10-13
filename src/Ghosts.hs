@@ -84,13 +84,13 @@ In the case of:
 -}
 -- "special" states
 -- dead state overrules the fact that the ghost is controlled by a player
-ghostTarget Ghost{gstate=Dead}                        _             (Just p)      = p
-ghostTarget Ghost{gstate=Dead}                       _             _             = undefined         -- this should break the game
-ghostTarget Ghost{gname=name, gcontrol=Player}       _             (Just p)      = ghostCorner name  -- todo: IO stuff
-ghostTarget Ghost{gcontrol=Player, gpos=gp, gdir=gd} _             _             = moveFrom gp gd    -- this should NOT occur, mostly here for completeness
-ghostTarget Ghost{gstate=Scared}                     _             (Just p)      = p
-ghostTarget Ghost{gstate=Scared, gpos=gp, gdir=gd}   _             _             = moveFrom gp gd    -- this should NOT occur, mostly here for completeness
-ghostTarget Ghost{gname=name, gstate=(Scatter _)}    _             _             = ghostCorner name
+ghostTarget Ghost{gstate=Dead}                         _             (Just p)      = p
+ghostTarget Ghost{gstate=Dead}                         _             _             = undefined         -- this should break the game
+ghostTarget Ghost{gname=name, gcontrol=Player}         _             (Just p)      = ghostCorner name  -- todo: IO stuff
+ghostTarget Ghost{gcontrol=Player, gpos=gp, gdir=gd}   _             _             = moveFrom gp gd    -- this should NOT occur, mostly here for completeness
+ghostTarget Ghost{gstate=(Scared _)}                   _             (Just p)      = p
+ghostTarget Ghost{gstate=(Scared _), gpos=gp, gdir=gd} _             _             = moveFrom gp gd    -- this should NOT occur, mostly here for completeness
+ghostTarget Ghost{gname=name, gstate=(Scatter _)}      _             _             = ghostCorner name
 
 -- "normal" states  
 ghostTarget Ghost{gname=Pinky}          PacMan{ppos=pos, pdir=dir} _             = pinkyTarget pos dir
