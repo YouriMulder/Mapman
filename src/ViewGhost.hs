@@ -1,15 +1,12 @@
-module Blinky where
+module ViewGhost where
 
 import Model
+import Ghosts
 import Graphics.Gloss
 
-instance GridLocated Ghost where
-    getLocation (Ghost p _ _ _ _) = p   
-
 instance Sprite Ghost where 
-    render (Ghost _ _ ghostName _ _) = getGhostColor ghostName $ Circle radius
+    render (Ghost _ _ ghostName _ _) = getGhostColor ghostName $ circleSolid cellRadius
         where 
-            radius = minimum [cellWidth, cellHeight] / 2
             getGhostColor :: GhostName -> (Picture -> Picture)
             getGhostColor Blinky = Color red
             getGhostColor Pinky  = Color rose

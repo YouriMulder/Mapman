@@ -36,11 +36,18 @@ cellWidth = fromIntegral windowWidth / fromIntegral mazeWidth
 cellHeight :: Float
 cellHeight = fromIntegral windowHeight / fromIntegral mazeHeight
 
-dist :: Point -> Point -> Int
+cellDiameter :: Float
+cellDiameter = minimum [cellWidth, cellHeight]
+
+cellRadius :: Float        
+cellRadius = cellDiameter / 2
+
+
+dist :: Model.Point -> Model.Point -> Int
 -- Euclidian distance
 dist (Point x y) (Point u v) = (x - u) ^ 2 + (y - v)^2
 
-moveFrom :: Point -> Direction -> Point
+moveFrom :: Model.Point -> Direction -> Model.Point
 moveFrom (Point x y) North = Point x $ (y + 1) `mod` mazeHeight
 moveFrom (Point x y) South = Point x $ (y - 1) `mod` mazeHeight
 moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeWidth) y
@@ -69,13 +76,13 @@ data GhostName    = Pinky | Inky | Blinky | Clyde
 data GhostControl = Computer | Player
 
 data PacMan = PacMan {
-    ppos   :: Point,
+    ppos   :: Model.Point,
     pdir   :: Direction,
     pstate :: PMState
 }
 
 data Ghost  = Ghost {
-    gpos     :: Point,
+    gpos     :: Model.Point,
     gdir     :: Direction,
     gname    :: GhostName,
     gcontrol :: GhostControl,
@@ -83,9 +90,12 @@ data Ghost  = Ghost {
 }
 
 -- default type class for sprites (PacMan and Ghost will inherit these)
+class GridLocated a where 
+    move   :: a -> Model.Point -> Maze -> Model.Point  -- First point is a target. For Pacman, this target will be ignored
+    getLocation :: a -> Model.Point
+
 class Sprite s where
-    move   :: s -> Point -> Maze -> Point  -- First point is a target. For Pacman, this target will be ignored
-    render :: s -> a
+    render :: s -> Picture
 
 data GameState = GameState {
     maze      :: Maze,

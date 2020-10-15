@@ -14,11 +14,11 @@ main :: IO()
 main = do 
     contents <- readFile file
     let maze = stringToMaze contents
-    let pacMan = PacMan (Model.Point 0 0) West Normal
-    let g1 = Ghost (Model.Point 0 0) North Pinky Computer (Scatter 10)
-    let g2 = Ghost (Model.Point 0 0) North Inky Computer (Scatter 10)
-    let g3 = Ghost (Model.Point 0 0) North Blinky Computer (Scatter 10)
-    let g4 = Ghost (Model.Point 0 0) North Clyde Computer (Scatter 10)
+    let pacMan = PacMan (Model.Point 10 0) West Normal
+    let g1 = Ghost (Model.Point 0 10) North Pinky Computer (Scatter 10)
+    let g2 = Ghost (Model.Point 20 0) North Inky Computer (Scatter 10)
+    let g3 = Ghost (Model.Point 0 20) North Blinky Computer (Scatter 10)
+    let g4 = Ghost (Model.Point 20 20) North Clyde Computer (Scatter 10)
 
     putStr "Starting debug checks\n"
     putStr "Is maze valid: "

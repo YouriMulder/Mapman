@@ -39,6 +39,9 @@ getAll f m = M.keys $ M.filter (== f) m
 getRest :: Field -> Maze -> [Point]
 getRest f m = M.keys $ M.filter (/= f) m
 
+getAllPairs :: Maze -> [(Point, Field)]
+getAllPairs = M.toList
+
 -- find first occurrence of field in the maze (or raise error if not present)
 find :: Field -> Maze -> Point
 -- a map is not really used for this purpose, but this will mostly be used to find the starting position for pacman and the ghost house

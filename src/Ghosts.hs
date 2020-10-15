@@ -135,6 +135,6 @@ ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c s
                            else Dead
               _         -> Dead 
 
-instance Sprite Ghost where
+instance GridLocated Ghost where
     move = undefined
-    render = undefined
+    getLocation Ghost{gpos=gp} = gp
