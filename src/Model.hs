@@ -68,19 +68,6 @@ data GhostState   = Scatter Int                     -- Ghost's state.
 data GhostName    = Pinky | Inky | Blinky | Clyde
 data GhostControl = Computer | Player
 
-<<<<<<< HEAD
-data PacMan = PacMan Model.Point Direction PMState
-
-data Ghost  = Ghost Model.Point Direction GhostName GhostControl GhostState 
-
--- default type class for sprites (PacMan and Ghost will inherit these)
-class GridLocated a where 
-    getLocation :: a -> Model.Point
-
-class (GridLocated s) => Sprite s where
-    move :: s -> Model.Point -> s  -- point is PacMan's position
-    render :: s -> Picture
-=======
 data PacMan = PacMan {
     ppos   :: Point,
     pdir   :: Direction,
@@ -99,7 +86,6 @@ data Ghost  = Ghost {
 class Sprite s where
     move   :: s -> Point -> Maze -> Point  -- First point is a target. For Pacman, this target will be ignored
     render :: s -> a
->>>>>>> 23f76926090bae30332c4fcd7fdf1f8e02084c27
 
 data GameState = GameState {
     maze      :: Maze,
