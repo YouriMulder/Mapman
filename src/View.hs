@@ -1,31 +1,44 @@
 module View where
 
 import Model
-
-import Graphics.Gloss
-import Data.List
 import Pacman
-import Blinky
+import ViewGhost
+import ViewMaze
+import Maze
+
+import Data.List
+import Graphics.Gloss
 
 view :: GameState -> IO Picture
 view = return . viewPure
 
 viewPure :: GameState -> Picture
-viewPure gameState = Pictures [vPacMan, vBlinky, vPinky, vInky, vClyde]
+viewPure gameState = Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde]
     where
-        vPacMan = renderInGrid $ pacman gameState
-        vBlinky = renderInGrid $ blinky gameState
-        vPinky  = renderInGrid $ pinky  gameState
-        vInky   = renderInGrid $ inky   gameState
-        vClyde  = renderInGrid $ clyde  gameState
+        vMaze   = renderMaze        $ maze   gameState
+        vPacMan = renderGridLocated $ pacman gameState
+        vBlinky = renderGridLocated $ blinky gameState
+        vPinky  = renderGridLocated $ pinky  gameState
+        vInky   = renderGridLocated $ inky   gameState
+        vClyde  = renderGridLocated $ clyde  gameState
 
-renderInGrid :: (Sprite a) => a -> Picture
-renderInGrid a = translateInGrid (render a) a
+renderMaze :: Maze -> Picture
+renderMaze maze = Pictures $ renderedFields
+    where
+        renderedFields = map (uncurry (flip renderInGrid)) (getAllPairs maze)
 
-translateInGrid :: (GridLocated a) => Picture -> a -> Picture
-translateInGrid picture a = translateCellOrigin (cellWidth/2, cellHeight/2) (translateTopLeft pixelPosition picture)
+renderGridLocated :: (Sprite a, GridLocated a) => a -> Picture
+renderGridLocated a = translateInGrid (render a) (getLocation a)
+
+renderInGrid :: (Sprite a) => a -> Model.Point -> Picture
+renderInGrid sprite gridPosition = translateInGrid (render sprite) gridPosition
+
+translateInGrid :: Picture -> Model.Point -> Picture
+translateInGrid picture gridPosition = 
+    translateCellOrigin cellOriginOffset (translateTopLeft pixelPosition picture)
     where 
-        pixelPosition = getCellPixelTopLeft (getLocation a)
+        cellOriginOffset = (cellWidth/2, cellHeight/2)
+        pixelPosition = getCellPixelTopLeft gridPosition
 
 getCellPixelTopLeft :: Model.Point -> (Float, Float)
 getCellPixelTopLeft (Point cellX cellY) = 
