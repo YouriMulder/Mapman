@@ -14,5 +14,5 @@ executable gloss-counter
                        unordered-containers -any,
                        gloss
   hs-source-dirs:      src
-  other-modules:       Controller, Maze, Ghosts, Model, View
+  other-modules:       Controller, Maze, Ghosts, Model, View, Pacman, Blinky
   default-language:    Haskell2010

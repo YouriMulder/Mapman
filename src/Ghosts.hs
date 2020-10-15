@@ -117,9 +117,9 @@ refreshScary :: GhostName -> GhostState
 refreshScary _ = Scary 20      -- (frames) todo: timings (match on name)
 
 ghostMove :: Ghost -> PacMan -> Maybe Point -> Maze -> Ghost
-ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c s
+ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c (nextState s)
     where dir     = ghostDir g (ghostTarget g pm p) m
-          nextPos = (moveFrom gp dir)
+          nextPos = moveFrom gp dir
         
           nextState :: GhostState -> GhostState
           nextState (Scary   1) = refreshScatter n
@@ -158,3 +158,6 @@ updateGhosts (GameState m pm gb gp gi gc s hs l p) =
 instance Sprite Ghost where
     move = undefined
     render = undefined
+
+instance GridLocated Ghost where
+    getLocation Ghost{gpos=p} = p

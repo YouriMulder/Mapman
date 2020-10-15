@@ -6,10 +6,10 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
 step :: Float -> GameState -> IO GameState
-step secs gstate = return gstate
+step secs = return
 
 input :: Event -> GameState -> IO GameState
-input keyEvent@(EventKey _ _ _ _) gstate
+input keyEvent@EventKey{} gstate
     = return (eventKeyHandler keyEvent gstate)
 input _ gstate = return gstate
 

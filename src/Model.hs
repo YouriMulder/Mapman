@@ -1,6 +1,13 @@
 module Model where
 
 import qualified Data.Map as M
+import Graphics.Gloss.Data.Picture
+
+windowWidth  :: Int
+windowWidth  = 400
+
+windowHeight :: Int
+windowHeight = 400
 
 {- BASE DATA -}
 
@@ -24,15 +31,20 @@ mazeHeight :: Int
 mazeHeight = 31
 
 
-dist :: Point -> Point -> Int
+dist :: Model.Point -> Model.Point -> Int
 -- Euclidian distance
 dist (Point x y) (Point u v) = (x - u) ^ 2 + (y - v)^2
 
-moveFrom :: Point -> Direction -> Point
+moveFrom :: Model.Point -> Direction -> Model.Point
 moveFrom (Point x y) North = Point x $ (y + 1) `mod` mazeHeight
 moveFrom (Point x y) South = Point x $ (y - 1) `mod` mazeHeight
 moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeWidth) y
 moveFrom (Point x y) West  = Point ((x - 1) `mod` mazeWidth) y
+cellWidth :: Float
+cellWidth = fromIntegral windowWidth / fromIntegral mazeWidth
+
+cellHeight :: Float
+cellHeight = fromIntegral windowHeight / fromIntegral mazeHeight
 
 -- info on what is on the ground in a certain location
 data Field = Empty
@@ -43,7 +55,7 @@ data Field = Empty
            | GhostHouse
         deriving (Eq, Show, Enum)
 
-type Maze  = M.Map Point Field
+type Maze  = M.Map Model.Point Field
 
 {- SPRITE DATA -}
 
@@ -57,13 +69,13 @@ data GhostName    = Pinky | Inky | Blinky | Clyde
 data GhostControl = Computer | Player
 
 data PacMan = PacMan {
-    ppos   :: Point,
+    ppos   :: Model.Point,
     pdir   :: Direction,
     pstate :: PMState
 }
 
 data Ghost  = Ghost {
-    gpos     :: Point,
+    gpos     :: Model.Point,
     gdir     :: Direction,
     gname    :: GhostName,
     gcontrol :: GhostControl,
@@ -71,9 +83,12 @@ data Ghost  = Ghost {
 }
 
 -- default type class for sprites (PacMan and Ghost will inherit these)
-class Sprite s where
-    move   :: s -> Point -> Maze -> Point  -- First point is a target. For Pacman, this target will be ignored
-    render :: s -> a
+class GridLocated a where 
+    getLocation :: a -> Model.Point
+
+class (GridLocated s) => Sprite s where
+    move :: s -> Model.Point -> s  -- point is PacMan's position
+    render :: s -> Picture
 
 data GameState = GameState {
     maze      :: Maze,
