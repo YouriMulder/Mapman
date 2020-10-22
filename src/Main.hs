@@ -19,7 +19,7 @@ main = do
     let pinky  = Ghost  (find GhostHouse  maze) South Pinky  Computer (Scatter 100)
     let inky   = Ghost  (find GhostHouse  maze) South Inky   Computer (Scatter 100)
     let blinky = Ghost  (find GhostHouse  maze) South Blinky Computer (Scatter 100)
-    let clyde  = Ghost  (find GhostHouse  maze) South Clyde  Computer (Scatter 100)
+    let clyde  = Ghost  (find GhostHouse  maze) South Clyde  (Player West) (Scatter 100)
 
     putStr "Starting debug checks\n"
     putStr "Is maze valid: "

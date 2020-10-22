@@ -85,20 +85,19 @@ In the case of (in order of priority):
 -}
 -- "special" states
 -- dead state overrules the fact that the ghost is controlled by a player
-ghostTarget Ghost{gstate=Dead}                       _             (Just p)      = p
-ghostTarget Ghost{gstate=Dead}                       _             _             = undefined         -- this should NOT occur, mostly here for completeness
-ghostTarget Ghost{gname=name, gcontrol=Player}       _             (Just p)      = undefined         -- todo: IO stuff
-ghostTarget Ghost{gcontrol=Player}                   _             _             = undefined         -- this should NOT occur, mostly here for completeness
-ghostTarget Ghost{gstate=(Scared _)}                 _             (Just p)      = p
-ghostTarget Ghost{gstate=(Scared _)}                 _             _             = undefined         -- this should NOT occur, mostly here for completeness
-ghostTarget Ghost{gname=name, gstate=(Scatter _)}    _             _             = ghostCorner name
+ghostTarget Ghost{gstate=Dead}                              _      (Just p)      = p
+ghostTarget Ghost{gstate=Dead}                              _      _             = error "Unknown GhostHouse position for dead ghost"
+ghostTarget Ghost{gpos=gp, gcontrol=(Player d)}             _      _             = moveFrom gp d
+ghostTarget Ghost{gstate=(Scared _)}                        _      (Just p)      = p
+ghostTarget Ghost{gstate=(Scared _)}                        _      _             = error "Unknown Random position for scared ghost"
+ghostTarget Ghost{gname=name, gstate=(Scatter _)}           _      _             = ghostCorner name
 
 -- "normal" states  
 ghostTarget Ghost{gname=Pinky}          PacMan{ppos=pos, pdir=dir} _             = pinkyTarget pos dir
 ghostTarget Ghost{gname=Blinky}         PacMan{ppos=pos}           _             = blinkyTarget pos
 ghostTarget Ghost{gname=Clyde, gpos=gp} PacMan{ppos=p}             _             = clydeTarget gp p
 ghostTarget Ghost{gname=Inky}           pm                         (Just blinky) = inkyTarget blinky pm
-ghostTarget Ghost{gname=Inky}           _                          Nothing       = undefined          -- this should NOT occur, mostly here for completeness
+ghostTarget Ghost{gname=Inky}           _                          _             = error "Unknown Blinky position for Inky"
 
 ghostDir :: Ghost -> Point -> Maze -> Direction
 -- the general strategy in how ghosts move towards their target
@@ -146,15 +145,14 @@ makeScared (Ghost p d n c _) = Ghost p d n c (Scared 100)  -- todo: time a ghost
 makeDead   :: Ghost -> Ghost
 makeDead   (Ghost p d n c _) = Ghost p d n c Dead
 
-updateGhosts :: GameState -> GameState
-updateGhosts (GameState m pm gb gp gi gc s hs l p) = 
+updateGhosts :: GameState -> (Ghost -> Maybe Point) -> GameState
+updateGhosts (GameState m pm gb gp gi gc s hs l p) rand = 
         GameState m pm (updateGhost gb) (updateGhost gp) (updateGhost gi) (updateGhost gc) s hs l p
     where auxPos :: Ghost -> Maybe Point
-          auxPos Ghost{gstate=Dead}       = Just $ find GhostHouse m
-          auxPos Ghost{gcontrol=Player}   = undefined  -- todo: IO stuff
-          auxPos Ghost{gstate=(Scared _)} = undefined  -- todo: random point
-          auxPos Ghost{gname=Inky}        = Just $ gpos gb
-          auxPos _                        = Nothing
+          auxPos Ghost{gstate=Dead}         = Just $ find GhostHouse m
+          auxPos g@Ghost{gstate=(Scared _)} = rand g
+          auxPos Ghost{gname=Inky}          = Just $ gpos gb
+          auxPos _                          = Nothing
           
           updateGhost :: Ghost -> Ghost
           updateGhost g = ghostMove g pm (auxPos g) m

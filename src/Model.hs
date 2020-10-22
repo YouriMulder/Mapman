@@ -53,8 +53,8 @@ dist :: Model.Point -> Model.Point -> Int
 dist (Point x y) (Point u v) = (x - u) ^ 2 + (y - v)^2
 
 moveFrom :: Model.Point -> Direction -> Model.Point
-moveFrom (Point x y) North = Point x $ (y + 1) `mod` mazeHeight
-moveFrom (Point x y) South = Point x $ (y - 1) `mod` mazeHeight
+moveFrom (Point x y) North = Point x $ (y - 1) `mod` mazeHeight
+moveFrom (Point x y) South = Point x $ (y + 1) `mod` mazeHeight
 moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeWidth) y
 moveFrom (Point x y) West  = Point ((x - 1) `mod` mazeWidth) y
 
@@ -79,7 +79,10 @@ data GhostState   = Scatter Int                     -- Ghost's state.
                   | Dead
                 deriving (Show)
 data GhostName    = Pinky | Inky | Blinky | Clyde
-data GhostControl = Computer | Player
+                deriving (Enum)
+data GhostControl = Computer 
+                  | Player Direction  -- holds direction pressed by the player
+                deriving (Show)
 
 data PacMan = PacMan {
     ppos   :: Model.Point,
