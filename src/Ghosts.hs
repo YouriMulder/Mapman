@@ -1,5 +1,7 @@
 module Ghosts (
-    ghostTarget
+    makeScared,
+    makeDead,
+    updateGhosts
 ) where
 
 import Model 
@@ -51,7 +53,6 @@ ghostCorner Blinky = Point (mazeWidth - 3)  0
 ghostCorner Clyde  = Point 2             $  mazeHeight - 1
 ghostCorner Inky   = Point (mazeWidth - 3) (mazeHeight - 1)
 
-
 pinkyTarget :: Point -> Direction -> Point
 -- pinky's movement is based on Pac-man's position and direction
 pinkyTarget p d = moveMultiple p d 4
@@ -66,8 +67,8 @@ blinkyTarget = id  -- simply Pac-man's position
 
 clydeTarget :: Point -> Point -> Point
 -- based on Clyde's position and Pac-man's position
-clydeTarget clyde@(Point x y) pacman@(Point u v) | (x - u)^2 + (y - v)^2 > 8^2 = pacman
-clydeTarget _ _                                                                = ghostCorner Clyde
+clydeTarget (Point x y) pacman@(Point u v) | (x - u)^2 + (y - v)^2 > 8^2 = pacman
+clydeTarget _ _                                                          = ghostCorner Clyde
 
 inkyTarget :: Point -> PacMan -> Point
 -- based on Blinky's position and Pac-man
@@ -76,55 +77,58 @@ inkyTarget (Point x y) (PacMan p d _) = let (Point u v) = pinkyTarget p d
 
 ghostTarget :: Ghost -> PacMan -> Maybe Point -> Point
 {- some ghosts need an "auxiliary point"
-In the case of:
- - Inky:                     this is Blinky's position
+In the case of (in order of priority):
+ - Dead ghosts:              this is the ghost house
  - Player controller ghosts: this is the position in the direction the player set with IO
  - Scared ghosts:            this is a random position adjacent to the ghost's position, as in scared mode, ghosts move pseudorandomly
- - Dead ghosts:              this is the ghost house
+ - Inky:                     this is Blinky's position
 -}
 -- "special" states
 -- dead state overrules the fact that the ghost is controlled by a player
-ghostTarget Ghost{gstate=Dead}                         _             (Just p)      = p
-ghostTarget Ghost{gstate=Dead}                         _             _             = undefined         -- this should break the game
-ghostTarget Ghost{gname=name, gcontrol=Player}         _             (Just p)      = ghostCorner name  -- todo: IO stuff
-ghostTarget Ghost{gcontrol=Player, gpos=gp, gdir=gd}   _             _             = moveFrom gp gd    -- this should NOT occur, mostly here for completeness
-ghostTarget Ghost{gstate=(Scared _)}                   _             (Just p)      = p
-ghostTarget Ghost{gstate=(Scared _), gpos=gp, gdir=gd} _             _             = moveFrom gp gd    -- this should NOT occur, mostly here for completeness
-ghostTarget Ghost{gname=name, gstate=(Scatter _)}      _             _             = ghostCorner name
+ghostTarget Ghost{gstate=Dead}                              _      (Just p)      = p
+ghostTarget Ghost{gstate=Dead}                              _      _             = error "Unknown GhostHouse position for dead ghost"
+ghostTarget Ghost{gpos=gp, gcontrol=(Player d)}             _      _             = moveFrom gp d
+ghostTarget Ghost{gstate=(Scared _)}                        _      (Just p)      = p
+ghostTarget Ghost{gstate=(Scared _)}                        _      _             = error "Unknown Random position for scared ghost"
+ghostTarget Ghost{gname=name, gstate=(Scatter _)}           _      _             = ghostCorner name
 
 -- "normal" states  
 ghostTarget Ghost{gname=Pinky}          PacMan{ppos=pos, pdir=dir} _             = pinkyTarget pos dir
 ghostTarget Ghost{gname=Blinky}         PacMan{ppos=pos}           _             = blinkyTarget pos
 ghostTarget Ghost{gname=Clyde, gpos=gp} PacMan{ppos=p}             _             = clydeTarget gp p
 ghostTarget Ghost{gname=Inky}           pm                         (Just blinky) = inkyTarget blinky pm
-ghostTarget Ghost{gname=Inky}           _                          Nothing       = undefined         -- this should crash the app
+ghostTarget Ghost{gname=Inky}           _                          _             = error "Unknown Blinky position for Inky"
 
 ghostDir :: Ghost -> Point -> Maze -> Direction
 -- the general strategy in how ghosts move towards their target
 -- ghosts are not allowed to move back into themselves
-ghostDir g@Ghost{gpos=gp, gdir=gd} p m = minimumBy cmp $ filter (/= gd) $ validMoves gp m
+ghostDir Ghost{gpos=gp, gdir=gd} p m = case choices of 
+    [] -> gd -- error "Invalid ghost position in ghostDir"
+    _  -> minimumBy cmp choices
     where 
+        choices = filter (/= opposite gd) $ validMoves gp m
+
         cmp d e = compare (ord d) (ord e)
 
         ord :: Direction -> (Int, Direction)
         ord d = (dist p $ moveFrom gp d, d)
 
 refreshScatter :: GhostName -> GhostState
-refreshScatter _ = Scatter 20  -- (frames) todo: timings (match on name)
+refreshScatter _ = Scatter 50  -- (frames) todo: timings (match on name)
 
 refreshScary :: GhostName -> GhostState
-refreshScary _ = Scary 20  -- (frames) todo: timings (match on name)
+refreshScary _ = Scary 50      -- (frames) todo: timings (match on name)
 
 ghostMove :: Ghost -> PacMan -> Maybe Point -> Maze -> Ghost
-ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c s
+ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c (nextState s)
     where dir     = ghostDir g (ghostTarget g pm p) m
-          nextPos = (moveFrom gp dir)
+          nextPos = moveFrom gp dir
         
           nextState :: GhostState -> GhostState
           nextState (Scary   1) = refreshScatter n
-          nextState (Scary   t) = Scatter (t - 1)
+          nextState (Scary   t) = Scary (t - 1)
           nextState (Scatter 1) = refreshScary   n
-          nextState (Scatter t) = Scary   (t - 1)
+          nextState (Scatter t) = Scatter   (t - 1)
           nextState (Scared  1) = refreshScatter n
           nextState (Scared  t) = Scared  (t - 1)
 
@@ -134,6 +138,24 @@ ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c s
                            then refreshScary n -- next to ghosthouse position
                            else Dead
               _         -> Dead 
+
+makeScared :: Ghost -> Ghost
+makeScared (Ghost p d n c _) = Ghost p d n c (Scared 100)  -- todo: time a ghost is scared
+
+makeDead   :: Ghost -> Ghost
+makeDead   (Ghost p d n c _) = Ghost p d n c Dead
+
+updateGhosts :: GameState -> (Ghost -> Maybe Point) -> GameState
+updateGhosts (GameState m pm gb gp gi gc s hs l p) rand = 
+        GameState m pm (updateGhost gb) (updateGhost gp) (updateGhost gi) (updateGhost gc) s hs l p
+    where auxPos :: Ghost -> Maybe Point
+          auxPos Ghost{gstate=Dead}         = Just $ find GhostHouse m
+          auxPos g@Ghost{gstate=(Scared _)} = rand g
+          auxPos Ghost{gname=Inky}          = Just $ gpos gb
+          auxPos _                          = Nothing
+          
+          updateGhost :: Ghost -> Ghost
+          updateGhost g = ghostMove g pm (auxPos g) m
 
 instance GridLocated Ghost where
     move = undefined

@@ -20,8 +20,13 @@ data Direction = North | West | South | East
     deriving (Eq, Ord, Show, Enum)
 
 directions :: [Direction]
-directions = [North ..]
+directions = [North, West, South, East]
 
+opposite :: Direction -> Direction
+opposite North = South
+opposite South = North
+opposite West = East
+opposite East = West
 
 {- MAZE DATA -}
 mazeWidth :: Int
@@ -72,8 +77,12 @@ data GhostState   = Scatter Int                     -- Ghost's state.
                   | Scary   Int                     -- Ghosts are scattering for a certain number of seconds, then chasing for a certain number of seconds
                   | Scared  Int
                   | Dead
+                deriving (Show)
 data GhostName    = Pinky | Inky | Blinky | Clyde
-data GhostControl = Computer | Player
+                deriving (Enum)
+data GhostControl = Computer 
+                  | Player Direction  -- holds direction pressed by the player
+                deriving (Show)
 
 data PacMan = PacMan {
     ppos   :: Model.Point,
