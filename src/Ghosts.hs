@@ -67,8 +67,8 @@ blinkyTarget = id  -- simply Pac-man's position
 
 clydeTarget :: Point -> Point -> Point
 -- based on Clyde's position and Pac-man's position
-clydeTarget clyde@(Point x y) pacman@(Point u v) | (x - u)^2 + (y - v)^2 > 8^2 = pacman
-clydeTarget _ _                                                                = ghostCorner Clyde
+clydeTarget (Point x y) pacman@(Point u v) | (x - u)^2 + (y - v)^2 > 8^2 = pacman
+clydeTarget _ _                                                          = ghostCorner Clyde
 
 inkyTarget :: Point -> PacMan -> Point
 -- based on Blinky's position and Pac-man
@@ -103,8 +103,12 @@ ghostTarget Ghost{gname=Inky}           _                          Nothing      
 ghostDir :: Ghost -> Point -> Maze -> Direction
 -- the general strategy in how ghosts move towards their target
 -- ghosts are not allowed to move back into themselves
-ghostDir g@Ghost{gpos=gp, gdir=gd} p m = minimumBy cmp $ filter (/= gd) $ validMoves gp m
+ghostDir g@Ghost{gpos=gp, gdir=gd} p m = case choices of 
+    [] -> error "Invalid ghost position in ghostDir"
+    _  -> minimumBy cmp choices
     where 
+        choices = filter (/= gd) $ validMoves gp m
+
         cmp d e = compare (ord d) (ord e)
 
         ord :: Direction -> (Int, Direction)
