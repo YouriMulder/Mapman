@@ -1,7 +1,7 @@
 module View where
 
 import Model
-import Pacman
+import ViewPacMan
 import ViewGhost
 import ViewMaze
 import Maze

@@ -138,3 +138,5 @@ ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c s
 instance GridLocated Ghost where
     move = undefined
     getLocation Ghost{gpos=gp} = gp
+    setLocation (Ghost _ gdir gname gcontrol gstate) position =
+        Ghost position gdir gname gcontrol gstate

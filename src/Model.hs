@@ -48,8 +48,8 @@ dist :: Model.Point -> Model.Point -> Int
 dist (Point x y) (Point u v) = (x - u) ^ 2 + (y - v)^2
 
 moveFrom :: Model.Point -> Direction -> Model.Point
-moveFrom (Point x y) North = Point x $ (y + 1) `mod` mazeHeight
-moveFrom (Point x y) South = Point x $ (y - 1) `mod` mazeHeight
+moveFrom (Point x y) North = Point x $ (y - 1) `mod` mazeHeight
+moveFrom (Point x y) South = Point x $ (y + 1) `mod` mazeHeight
 moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeWidth) y
 moveFrom (Point x y) West  = Point ((x - 1) `mod` mazeWidth) y
 
@@ -93,6 +93,10 @@ data Ghost  = Ghost {
 class GridLocated a where 
     move   :: a -> Model.Point -> Maze -> Model.Point  -- First point is a target. For Pacman, this target will be ignored
     getLocation :: a -> Model.Point
+    setLocation :: a -> Model.Point -> a
+    
+    moveDirection :: a -> Direction -> a
+    moveDirection a direction = setLocation a (moveFrom (getLocation a) direction)
 
 class Sprite s where
     render :: s -> Picture
@@ -109,3 +113,7 @@ data GameState = GameState {
     lives     :: Int,
     paused    :: Bool
 }
+
+setGameStatePacMan :: PacMan -> GameState -> GameState
+setGameStatePacMan pacman (GameState m _ gb gp gi gc s hs l p) 
+    = GameState m pacman gb gp gi gc s hs l p
