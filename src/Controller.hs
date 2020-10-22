@@ -3,11 +3,18 @@ module Controller where
 import Model
 import Ghosts
 
+{- debugging stuff -}
+import Maze
+{- /debugging stuff -}
+
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
 step :: Float -> GameState -> IO GameState
-step secs gstate = return gstateGhosts
+step secs gstate@GameState{blinky=Ghost{gstate=gs}, maze=m} = do 
+    print $ gs
+    return gstateGhosts
+
     where gstateGhosts = updateGhosts gstate
 
 -- step :: Float -> GameState -> IO GameState

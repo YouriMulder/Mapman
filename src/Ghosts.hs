@@ -103,11 +103,11 @@ ghostTarget Ghost{gname=Inky}           _                          Nothing      
 ghostDir :: Ghost -> Point -> Maze -> Direction
 -- the general strategy in how ghosts move towards their target
 -- ghosts are not allowed to move back into themselves
-ghostDir g@Ghost{gpos=gp, gdir=gd} p m = case choices of 
-    [] -> error "Invalid ghost position in ghostDir"
+ghostDir Ghost{gpos=gp, gdir=gd} p m = case choices of 
+    [] -> gd -- error "Invalid ghost position in ghostDir"
     _  -> minimumBy cmp choices
     where 
-        choices = filter (/= gd) $ validMoves gp m
+        choices = filter (/= opposite gd) $ validMoves gp m
 
         cmp d e = compare (ord d) (ord e)
 
@@ -115,10 +115,10 @@ ghostDir g@Ghost{gpos=gp, gdir=gd} p m = case choices of
         ord d = (dist p $ moveFrom gp d, d)
 
 refreshScatter :: GhostName -> GhostState
-refreshScatter _ = Scatter 20  -- (frames) todo: timings (match on name)
+refreshScatter _ = Scatter 50  -- (frames) todo: timings (match on name)
 
 refreshScary :: GhostName -> GhostState
-refreshScary _ = Scary 20      -- (frames) todo: timings (match on name)
+refreshScary _ = Scary 50      -- (frames) todo: timings (match on name)
 
 ghostMove :: Ghost -> PacMan -> Maybe Point -> Maze -> Ghost
 ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c (nextState s)
@@ -127,9 +127,9 @@ ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c (nextState s)
         
           nextState :: GhostState -> GhostState
           nextState (Scary   1) = refreshScatter n
-          nextState (Scary   t) = Scatter (t - 1)
+          nextState (Scary   t) = Scary (t - 1)
           nextState (Scatter 1) = refreshScary   n
-          nextState (Scatter t) = Scary   (t - 1)
+          nextState (Scatter t) = Scatter   (t - 1)
           nextState (Scared  1) = refreshScatter n
           nextState (Scared  t) = Scared  (t - 1)
 
@@ -159,9 +159,6 @@ updateGhosts (GameState m pm gb gp gi gc s hs l p) =
           updateGhost :: Ghost -> Ghost
           updateGhost g = ghostMove g pm (auxPos g) m
 
-instance Sprite Ghost where
-    move = undefined
-    render = undefined
-
 instance GridLocated Ghost where
-    getLocation Ghost{gpos=p} = p
+    move = undefined
+    getLocation Ghost{gpos=gp} = gp

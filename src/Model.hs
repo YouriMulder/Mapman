@@ -20,8 +20,13 @@ data Direction = North | West | South | East
     deriving (Eq, Ord, Show, Enum)
 
 directions :: [Direction]
-directions = [North ..]
+directions = [North, West, South, East]
 
+opposite :: Direction -> Direction
+opposite North = South
+opposite South = North
+opposite West = East
+opposite East = West
 
 {- MAZE DATA -}
 mazeWidth :: Int
@@ -29,6 +34,18 @@ mazeWidth = 28
 
 mazeHeight :: Int
 mazeHeight = 31
+
+cellWidth :: Float
+cellWidth = fromIntegral windowWidth / fromIntegral mazeWidth
+
+cellHeight :: Float
+cellHeight = fromIntegral windowHeight / fromIntegral mazeHeight
+
+cellDiameter :: Float
+cellDiameter = minimum [cellWidth, cellHeight]
+
+cellRadius :: Float        
+cellRadius = cellDiameter / 2
 
 
 dist :: Model.Point -> Model.Point -> Int
@@ -40,11 +57,6 @@ moveFrom (Point x y) North = Point x $ (y + 1) `mod` mazeHeight
 moveFrom (Point x y) South = Point x $ (y - 1) `mod` mazeHeight
 moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeWidth) y
 moveFrom (Point x y) West  = Point ((x - 1) `mod` mazeWidth) y
-cellWidth :: Float
-cellWidth = fromIntegral windowWidth / fromIntegral mazeWidth
-
-cellHeight :: Float
-cellHeight = fromIntegral windowHeight / fromIntegral mazeHeight
 
 -- info on what is on the ground in a certain location
 data Field = Empty
@@ -65,6 +77,7 @@ data GhostState   = Scatter Int                     -- Ghost's state.
                   | Scary   Int                     -- Ghosts are scattering for a certain number of seconds, then chasing for a certain number of seconds
                   | Scared  Int
                   | Dead
+                deriving (Show)
 data GhostName    = Pinky | Inky | Blinky | Clyde
 data GhostControl = Computer | Player
 
@@ -84,10 +97,10 @@ data Ghost  = Ghost {
 
 -- default type class for sprites (PacMan and Ghost will inherit these)
 class GridLocated a where 
+    move   :: a -> Model.Point -> Maze -> Model.Point  -- First point is a target. For Pacman, this target will be ignored
     getLocation :: a -> Model.Point
 
-class (GridLocated s) => Sprite s where
-    move :: s -> Model.Point -> s  -- point is PacMan's position
+class Sprite s where
     render :: s -> Picture
 
 data GameState = GameState {

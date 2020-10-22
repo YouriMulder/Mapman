@@ -14,12 +14,12 @@ main :: IO()
 main = do 
     contents <- readFile file
 
-    let maze = stringToMaze contents
-    let pacMan = PacMan (Model.Point 0 0) West Normal
-    let g1 = Ghost (Model.Point 1 1) North Pinky Computer (Scatter 100)
-    let g2 = Ghost (Model.Point 1 2) North Inky Computer (Scatter 100)
-    let g3 = Ghost (Model.Point 2 10) North Blinky Computer (Scatter 100)
-    let g4 = Ghost (Model.Point 11 11) North Clyde Computer (Scatter 100)
+    let maze   = stringToMaze contents
+    let pacMan = PacMan (find PacmanStart maze) West  Normal
+    let pinky  = Ghost  (find GhostHouse  maze) South Pinky  Computer (Scatter 100)
+    let inky   = Ghost  (find GhostHouse  maze) South Inky   Computer (Scatter 100)
+    let blinky = Ghost  (find GhostHouse  maze) South Blinky Computer (Scatter 100)
+    let clyde  = Ghost  (find GhostHouse  maze) South Clyde  Computer (Scatter 100)
 
     putStr "Starting debug checks\n"
     putStr "Is maze valid: "
@@ -27,7 +27,18 @@ main = do
     
     putStr "Done with debug checks\n"
 
-    let gameState = GameState maze pacMan g1 g2 g3 g4 0 0 10 False
+    let gameState = GameState {
+        maze=maze,
+        pacman=pacMan,
+        pinky=pinky,
+        inky=inky,
+        blinky=blinky,
+        clyde=clyde,
+        score=0,
+        highScore=0,
+        lives=3,
+        paused=False
+    }
     playIO (InWindow "MapMan" (windowWidth, windowHeight) (0, 0)) -- Or FullScreen
               black            -- Background color
               10               -- Frames per second
