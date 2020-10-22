@@ -2,6 +2,7 @@ module Controller where
 
 import Model
 import Ghosts
+import Pacman
 
 import System.Random
 
@@ -13,10 +14,12 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
 step :: Float -> GameState -> IO GameState
-step secs gstate = do
+step secs gstate@GameState{lives=l} = do
+    print l
+
     gen <- newStdGen
     gstateGhosts <- return $ updateGhosts gstate $ randomPos gen
-    return gstateGhosts
+    return $ Pacman.interactState gstateGhosts
 
     where -- only needed for scared/player controlled ghosts, others are already handled in the updateGhosts function:
           randPoint :: StdGen -> Model.Point

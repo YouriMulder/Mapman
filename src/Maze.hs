@@ -54,6 +54,11 @@ validMoves :: Point -> Maze -> [Direction]
  -- if point is not a valid point in the maze, return that it is a wall
 validMoves p m = [q | q <- directions, let f = getField (moveFrom p q) m in f /= Wall && f /= GhostHouse]
 
+ghostInitialLook :: Maze -> Direction
+-- ghost must initially look in a direction they can move in
+-- if we do not do this, we risk the ghosts looking away, and forcing themselves through walls to get out of the ghost house
+ghostInitialLook m = head $ validMoves (find GhostHouse m) m
+
 reachable :: Point -> Maze -> [Point]
 reachable start m = S.toList $ fst $ traverse (S.empty, S.singleton start)
         where traverse :: (S.Set Point, S.Set Point) -> (S.Set Point, S.Set Point)

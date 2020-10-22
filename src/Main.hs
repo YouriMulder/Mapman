@@ -15,11 +15,12 @@ main = do
     contents <- readFile file
 
     let maze   = stringToMaze contents
-    let pacMan = PacMan (find PacmanStart maze) West  Normal
-    let pinky  = Ghost  (find GhostHouse  maze) South Pinky  Computer (Scatter 100)
-    let inky   = Ghost  (find GhostHouse  maze) South Inky   Computer (Scatter 100)
-    let blinky = Ghost  (find GhostHouse  maze) South Blinky Computer (Scatter 100)
-    let clyde  = Ghost  (find GhostHouse  maze) South Clyde  (Player West) (Scatter 100)
+    let pacMan = PacMan (find PacmanStart maze) West
+    -- todo: initial direction has to be valid (towards a wall, or they might glitch out)
+    let pinky  = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Pinky  Computer (Scatter 100)
+    let inky   = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Inky   Computer (Scatter 100)
+    let blinky = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Blinky Computer (Scatter 100)
+    let clyde  = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Clyde  (Player West) (Scatter 100)
 
     putStr "Starting debug checks\n"
     putStr "Is maze valid: "
@@ -36,7 +37,7 @@ main = do
         clyde=clyde,
         score=0,
         highScore=0,
-        lives=3,
+        lives=maxLives,
         paused=False
     }
     playIO (InWindow "MapMan" (windowWidth, windowHeight) (0, 0)) -- Or FullScreen
