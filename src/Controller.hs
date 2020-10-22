@@ -1,12 +1,18 @@
 module Controller where
 
 import Model
+import Ghosts
 
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
 step :: Float -> GameState -> IO GameState
-step secs = return
+step secs gstate = return gstateGhosts
+    where gstateGhosts = updateGhosts gstate
+
+-- step :: Float -> GameState -> IO GameState
+-- step secs = return
+
 
 input :: Event -> GameState -> IO GameState
 input keyEvent@EventKey{} gstate
