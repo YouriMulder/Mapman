@@ -146,8 +146,8 @@ makeDead   :: Ghost -> Ghost
 makeDead   (Ghost p d n c _) = Ghost p d n c Dead
 
 updateGhosts :: GameState -> (Ghost -> Maybe Point) -> GameState
-updateGhosts (GameState m pm gb gp gi gc s hs l p) rand = 
-        GameState m pm (updateGhost gb) (updateGhost gp) (updateGhost gi) (updateGhost gc) s hs l p
+updateGhosts (GameState m pm gb gp gi gc s hs l p kp) rand = 
+        GameState m pm (updateGhost gb) (updateGhost gp) (updateGhost gi) (updateGhost gc) s hs l p kp
     where auxPos :: Ghost -> Maybe Point
           auxPos Ghost{gstate=Dead}         = Just $ find GhostHouse m
           auxPos g@Ghost{gstate=(Scared _)} = rand g

@@ -1,7 +1,9 @@
 module Model where
 
 import qualified Data.Map as M
+import qualified Data.Set as S
 import Graphics.Gloss.Data.Picture
+import Graphics.Gloss.Interface.IO.Game 
 
 windowWidth  :: Int
 windowWidth  = 400
@@ -120,9 +122,10 @@ data GameState = GameState {
     score     :: Int,
     highScore :: Int,
     lives     :: Int,
-    paused    :: Bool
+    paused    :: Bool,
+    keysPressed :: S.Set Key
 }
 
 setGameStatePacMan :: PacMan -> GameState -> GameState
-setGameStatePacMan pacman (GameState m _ gb gp gi gc s hs l p) 
-    = GameState m pacman gb gp gi gc s hs l p
+setGameStatePacMan pacman gstate 
+    = gstate { pacman = pacman }
