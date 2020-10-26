@@ -72,9 +72,6 @@ data Field = Empty
 type Maze  = M.Map Model.Point Field
 
 {- SPRITE DATA -}
-
-data PMState      = Normal | Powered                -- Pac-Man's state
-
 data GhostState   = Scatter Int                     -- Ghost's state.
                   | Scary   Int                     -- Ghosts are scattering for a certain number of seconds, then chasing for a certain number of seconds
                   | Scared  Int
@@ -88,8 +85,7 @@ data GhostControl = Computer
 
 data PacMan = PacMan {
     ppos   :: Model.Point,
-    pdir   :: Direction,
-    pstate :: PMState
+    pdir   :: Direction
 }
 
 data Ghost  = Ghost {
@@ -111,6 +107,12 @@ class GridLocated a where
 
 class Sprite s where
     render :: s -> Picture
+
+maxLives :: Int
+maxLives = 3
+
+ghostKillScore :: Int
+ghostKillScore = 100
 
 data GameState = GameState {
     maze      :: Maze,

@@ -1,6 +1,4 @@
 module Ghosts (
-    makeScared,
-    makeDead,
     updateGhosts
 ) where
 
@@ -72,7 +70,7 @@ clydeTarget _ _                                                          = ghost
 
 inkyTarget :: Point -> PacMan -> Point
 -- based on Blinky's position and Pac-man
-inkyTarget (Point x y) (PacMan p d _) = let (Point u v) = pinkyTarget p d  
+inkyTarget (Point x y) (PacMan p d) = let (Point u v) = pinkyTarget p d  
                                         in Point (x + 2 * (u - x)) (y + 2 * (v - y))
 
 ghostTarget :: Ghost -> PacMan -> Maybe Point -> Point
@@ -138,12 +136,6 @@ ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c (nextState s)
                            then refreshScary n -- next to ghosthouse position
                            else Dead
               _         -> Dead 
-
-makeScared :: Ghost -> Ghost
-makeScared (Ghost p d n c _) = Ghost p d n c (Scared 100)  -- todo: time a ghost is scared
-
-makeDead   :: Ghost -> Ghost
-makeDead   (Ghost p d n c _) = Ghost p d n c Dead
 
 updateGhosts :: GameState -> (Ghost -> Maybe Point) -> GameState
 updateGhosts (GameState m pm gb gp gi gc s hs l p kp) rand = 

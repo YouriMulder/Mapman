@@ -2,6 +2,7 @@ module Controller where
 
 import Model
 import Ghosts
+import ControllerPacMan
 
 import qualified Data.Set as S
 import System.Random
@@ -15,12 +16,15 @@ import ControllerPacMan
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
-step secs gstate = do
+step :: Float -> GameState -> IO GameState
+step secs gstate@GameState{lives=l} = do
+    print l
+
     gen <- newStdGen
     gstateGhosts <- return $ updateGhosts gstate $ randomPos gen
     gstatePacMan <- return $ updatePacMan gstateGhosts
     gstateInput  <- return $ handleKeysPressed gstatePacMan
-    return gstateInput
+    return                 $ ControllerPacMan.interactState gstateInput
 
     where -- only needed for scared/player controlled ghosts, others are already handled in the updateGhosts function:
           randPoint :: StdGen -> Model.Point
