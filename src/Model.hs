@@ -1,7 +1,9 @@
 module Model where
 
 import qualified Data.Map as M
+import qualified Data.Set as S
 import Graphics.Gloss.Data.Picture
+import Graphics.Gloss.Interface.IO.Game 
 
 windowWidth  :: Int
 windowWidth  = 400
@@ -20,8 +22,13 @@ data Direction = North | West | South | East
     deriving (Eq, Ord, Show, Enum)
 
 directions :: [Direction]
-directions = [North ..]
+directions = [North, West, South, East]
 
+opposite :: Direction -> Direction
+opposite North = South
+opposite South = North
+opposite West = East
+opposite East = West
 
 {- MAZE DATA -}
 mazeWidth :: Int
@@ -48,8 +55,8 @@ dist :: Model.Point -> Model.Point -> Int
 dist (Point x y) (Point u v) = (x - u) ^ 2 + (y - v)^2
 
 moveFrom :: Model.Point -> Direction -> Model.Point
-moveFrom (Point x y) North = Point x $ (y + 1) `mod` mazeHeight
-moveFrom (Point x y) South = Point x $ (y - 1) `mod` mazeHeight
+moveFrom (Point x y) North = Point x $ (y - 1) `mod` mazeHeight
+moveFrom (Point x y) South = Point x $ (y + 1) `mod` mazeHeight
 moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeWidth) y
 moveFrom (Point x y) West  = Point ((x - 1) `mod` mazeWidth) y
 
@@ -72,8 +79,12 @@ data GhostState   = Scatter Int                     -- Ghost's state.
                   | Scary   Int                     -- Ghosts are scattering for a certain number of seconds, then chasing for a certain number of seconds
                   | Scared  Int
                   | Dead
+                deriving (Show)
 data GhostName    = Pinky | Inky | Blinky | Clyde
-data GhostControl = Computer | Player
+                deriving (Enum)
+data GhostControl = Computer 
+                  | Player Direction  -- holds direction pressed by the player
+                deriving (Show)
 
 data PacMan = PacMan {
     ppos   :: Model.Point,
@@ -93,6 +104,10 @@ data Ghost  = Ghost {
 class GridLocated a where 
     move   :: a -> Model.Point -> Maze -> Model.Point  -- First point is a target. For Pacman, this target will be ignored
     getLocation :: a -> Model.Point
+    setLocation :: a -> Model.Point -> a
+    
+    moveDirection :: a -> Direction -> a
+    moveDirection a direction = setLocation a (moveFrom (getLocation a) direction)
 
 class Sprite s where
     render :: s -> Picture
@@ -107,5 +122,10 @@ data GameState = GameState {
     score     :: Int,
     highScore :: Int,
     lives     :: Int,
-    paused    :: Bool
+    paused    :: Bool,
+    keysPressed :: S.Set Key
 }
+
+setGameStatePacMan :: PacMan -> GameState -> GameState
+setGameStatePacMan pacman gstate 
+    = gstate { pacman = pacman }

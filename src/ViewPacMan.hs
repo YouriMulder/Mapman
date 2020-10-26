@@ -1,11 +1,8 @@
-module Pacman where
+module ViewPacMan where
 
 import Model
+import ControllerPacMan
 import Graphics.Gloss
-
-instance GridLocated PacMan where
-    move = undefined
-    getLocation (PacMan p _ _) = p
 
 instance Sprite PacMan where 
     render _ = Color yellow $ circleSolid cellRadius
