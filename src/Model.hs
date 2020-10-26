@@ -20,8 +20,13 @@ data Direction = North | West | South | East
     deriving (Eq, Ord, Show, Enum)
 
 directions :: [Direction]
-directions = [North ..]
+directions = [North, West, South, East]
 
+opposite :: Direction -> Direction
+opposite North = South
+opposite South = North
+opposite West = East
+opposite East = West
 
 {- MAZE DATA -}
 mazeWidth :: Int
@@ -48,8 +53,8 @@ dist :: Model.Point -> Model.Point -> Int
 dist (Point x y) (Point u v) = (x - u) ^ 2 + (y - v)^2
 
 moveFrom :: Model.Point -> Direction -> Model.Point
-moveFrom (Point x y) North = Point x $ (y + 1) `mod` mazeHeight
-moveFrom (Point x y) South = Point x $ (y - 1) `mod` mazeHeight
+moveFrom (Point x y) North = Point x $ (y - 1) `mod` mazeHeight
+moveFrom (Point x y) South = Point x $ (y + 1) `mod` mazeHeight
 moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeWidth) y
 moveFrom (Point x y) West  = Point ((x - 1) `mod` mazeWidth) y
 
@@ -65,20 +70,20 @@ data Field = Empty
 type Maze  = M.Map Model.Point Field
 
 {- SPRITE DATA -}
-
-data PMState      = Normal | Powered                -- Pac-Man's state
-
 data GhostState   = Scatter Int                     -- Ghost's state.
                   | Scary   Int                     -- Ghosts are scattering for a certain number of seconds, then chasing for a certain number of seconds
                   | Scared  Int
                   | Dead
+                deriving (Show)
 data GhostName    = Pinky | Inky | Blinky | Clyde
-data GhostControl = Computer | Player
+                deriving (Enum)
+data GhostControl = Computer 
+                  | Player Direction  -- holds direction pressed by the player
+                deriving (Show)
 
 data PacMan = PacMan {
     ppos   :: Model.Point,
-    pdir   :: Direction,
-    pstate :: PMState
+    pdir   :: Direction
 }
 
 data Ghost  = Ghost {
@@ -96,6 +101,12 @@ class GridLocated a where
 
 class Sprite s where
     render :: s -> Picture
+
+maxLives :: Int
+maxLives = 3
+
+ghostKillScore :: Int
+ghostKillScore = 100
 
 data GameState = GameState {
     maze      :: Maze,
