@@ -50,6 +50,10 @@ find f = fst . M.findMin . M.filter (== f)  -- first element is the key (point)
 getField :: Point -> Maze -> Field
 getField = M.findWithDefault Wall
 
+-- Returns True if direction is possible, otherwise False
+isValidDirection :: Direction -> Point -> Maze -> Bool
+isValidDirection direction position maze = direction `elem` (validMoves position maze)
+
 validMoves :: Point -> Maze -> [Direction] 
  -- if point is not a valid point in the maze, return that it is a wall
 validMoves p m = [q | q <- directions, let f = getField (moveFrom p q) m in f /= Wall && f /= GhostHouse]

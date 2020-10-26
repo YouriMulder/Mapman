@@ -15,5 +15,5 @@ executable gloss-counter
                        gloss, 
                        random -any
   hs-source-dirs:      src
-  other-modules:       Controller, Maze, Ghosts, Model, View, Pacman, ViewMaze, ViewGhost, State
+  other-modules:       Controller, Maze, Ghosts, Model, View, ControllerPacMan, ViewPacMan, ViewMaze, ViewGhost, State
   default-language:    Haskell2010

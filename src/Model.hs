@@ -1,7 +1,9 @@
 module Model where
 
 import qualified Data.Map as M
+import qualified Data.Set as S
 import Graphics.Gloss.Data.Picture
+import Graphics.Gloss.Interface.IO.Game 
 
 windowWidth  :: Int
 windowWidth  = 400
@@ -98,6 +100,10 @@ data Ghost  = Ghost {
 class GridLocated a where 
     move   :: a -> Model.Point -> Maze -> Model.Point  -- First point is a target. For Pacman, this target will be ignored
     getLocation :: a -> Model.Point
+    setLocation :: a -> Model.Point -> a
+    
+    moveDirection :: a -> Direction -> a
+    moveDirection a direction = setLocation a (moveFrom (getLocation a) direction)
 
 class Sprite s where
     render :: s -> Picture
@@ -118,5 +124,10 @@ data GameState = GameState {
     score     :: Int,
     highScore :: Int,
     lives     :: Int,
-    paused    :: Bool
+    paused    :: Bool,
+    keysPressed :: S.Set Key
 }
+
+setGameStatePacMan :: PacMan -> GameState -> GameState
+setGameStatePacMan pacman gstate 
+    = gstate { pacman = pacman }

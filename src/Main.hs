@@ -6,6 +6,7 @@ import Ghosts
 import Controller
 import View
 
+import qualified Data.Set as S
 import Graphics.Gloss.Interface.IO.Game
 
 file = "level.mm"
@@ -29,16 +30,17 @@ main = do
     putStr "Done with debug checks\n"
 
     let gameState = GameState {
-        maze=maze,
-        pacman=pacMan,
-        pinky=pinky,
-        inky=inky,
-        blinky=blinky,
-        clyde=clyde,
-        score=0,
-        highScore=0,
-        lives=maxLives,
-        paused=False
+        maze=           maze,
+        pacman=         pacMan,
+        pinky=          pinky,
+        inky=           inky,
+        blinky=         blinky,
+        clyde=          clyde,
+        score=          0,
+        highScore=      0,
+        lives=          maxLives,
+        paused=         False,
+        keysPressed=    S.empty 
     }
     playIO (InWindow "MapMan" (windowWidth, windowHeight) (0, 0)) -- Or FullScreen
               black            -- Background color
