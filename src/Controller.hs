@@ -4,8 +4,6 @@ import Model
 import Ghosts
 import ControllerPacMan
 
-import Debug.Trace
-
 import qualified Data.Set as S
 import System.Random
 
