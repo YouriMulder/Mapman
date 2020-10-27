@@ -4,6 +4,8 @@ import Model
 import Ghosts
 import ControllerPacMan
 
+import Debug.Trace
+
 import qualified Data.Set as S
 import System.Random
 
@@ -17,7 +19,9 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
 step :: Float -> GameState -> IO GameState
-step secs gstate@GameState{lives=l} = do
+step _    gstate@GameState{paused=IsPaused} = 
+    return $ handleKeysPressed gstate
+step secs gstate@GameState{lives=l}         = do
     print l
 
     gen <- newStdGen
@@ -47,7 +51,8 @@ keyHandler (SpecialKey k) gstate
 keyHandler _ gstate = gstate
 
 charKeyHandler :: Char -> GameState -> GameState
-charKeyHandler _ gstate = gstate
+charKeyHandler 'p'  gstate = togglePause gstate
+charKeyHandler _    gstate = gstate
 
 specialKeyHandler :: SpecialKey -> GameState -> GameState
 specialKeyHandler KeyUp    gstate = updatePacManDirection' North gstate
@@ -73,3 +78,7 @@ updateKeysInput e@(EventKey k Down   _ _) gstate
     = gstate { keysPressed = S.insert k (keysPressed gstate) }
 updateKeysInput e@(EventKey k Up _ _) gstate 
     = gstate { keysPressed = S.delete k (keysPressed gstate) }
+
+togglePause :: GameState -> GameState
+togglePause gstate@GameState{paused=IsPaused} = gstate {paused=NotPaused}
+togglePause gstate                            = gstate {paused=IsPaused}
