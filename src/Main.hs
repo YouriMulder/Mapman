@@ -39,7 +39,7 @@ main = do
         score=          0,
         highScore=      0,
         lives=          maxLives,
-        paused=         False,
+        paused=         NotPaused,
         keysPressed=    S.empty 
     }
     playIO (InWindow "MapMan" (windowWidth, windowHeight) (0, 0)) -- Or FullScreen

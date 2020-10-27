@@ -114,6 +114,9 @@ maxLives = 3
 ghostKillScore :: Int
 ghostKillScore = 100
 
+data Pause = IsPaused | NotPaused
+    deriving (Eq, Show)
+
 data GameState = GameState {
     maze      :: Maze,
     pacman    :: PacMan,
@@ -124,7 +127,7 @@ data GameState = GameState {
     score     :: Int,
     highScore :: Int,
     lives     :: Int,
-    paused    :: Bool,
+    paused    :: Pause,
     keysPressed :: S.Set Key
 }
 

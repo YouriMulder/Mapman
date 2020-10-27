@@ -13,14 +13,24 @@ view :: GameState -> IO Picture
 view = return . viewPure
 
 viewPure :: GameState -> Picture
-viewPure gameState = Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde]
+viewPure gState = Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vPaused]
     where
-        vMaze   = renderMaze        $ maze   gameState
-        vPacMan = renderGridLocated $ pacman gameState
-        vBlinky = renderGridLocated $ blinky gameState
-        vPinky  = renderGridLocated $ pinky  gameState
-        vInky   = renderGridLocated $ inky   gameState
-        vClyde  = renderGridLocated $ clyde  gameState
+        vMaze   = renderMaze        $ maze   gState
+        vPacMan = renderGridLocated $ pacman gState
+        vBlinky = renderGridLocated $ blinky gState
+        vPinky  = renderGridLocated $ pinky  gState
+        vInky   = renderGridLocated $ inky   gState
+        vClyde  = renderGridLocated $ clyde  gState
+        vPaused = renderPaused      $ paused gState
+
+renderPaused :: Pause -> Picture
+renderPaused IsPaused = 
+    Color white $
+    Translate (-125) 0 $
+    Scale 0.2 0.2 $ 
+    Text "Press p to continue"
+renderPaused _        = Blank 
+
 
 renderMaze :: Maze -> Picture
 renderMaze maze = Pictures $ renderedFields
