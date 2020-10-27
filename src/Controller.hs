@@ -3,6 +3,7 @@ module Controller where
 import Model
 import Ghosts
 import ControllerPacMan
+import ControllerGhosts
 
 import qualified Data.Set as S
 import System.Random
@@ -26,7 +27,9 @@ step secs gstate@GameState{lives=l}         = do
     gstateGhosts <- return $ updateGhosts gstate $ randomPos gen
     gstatePacMan <- return $ updatePacMan gstateGhosts
     gstateInput  <- return $ handleKeysPressed gstatePacMan
-    return                 $ ControllerPacMan.interactState gstateInput
+    return                 $ case ControllerPacMan.interactState gstateInput of 
+                                Nothing -> pacManDeath gstateInput
+                                Just gs -> gs
 
     where -- only needed for scared/player controlled ghosts, others are already handled in the updateGhosts function:
           randPoint :: StdGen -> Model.Point
@@ -50,6 +53,10 @@ keyHandler _ gstate = gstate
 
 charKeyHandler :: Char -> GameState -> GameState
 charKeyHandler 'p'  gstate = togglePause gstate
+charKeyHandler 'w'  gstate = foldGhosts gstate (flip setDirection North)
+charKeyHandler 'a'  gstate = foldGhosts gstate (flip setDirection West)
+charKeyHandler 's'  gstate = foldGhosts gstate (flip setDirection South)
+charKeyHandler 'd'  gstate = foldGhosts gstate (flip setDirection East)
 charKeyHandler _    gstate = gstate
 
 specialKeyHandler :: SpecialKey -> GameState -> GameState

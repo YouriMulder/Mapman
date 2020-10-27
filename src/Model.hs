@@ -108,6 +108,9 @@ class GridLocated a where
 class Sprite s where
     render :: s -> Picture
 
+class Controllable c where
+    setDirection :: c -> Direction -> c
+
 maxLives :: Int
 maxLives = 3
 
@@ -129,6 +132,19 @@ data GameState = GameState {
     lives     :: Int,
     paused    :: Pause,
     keysPressed :: S.Set Key
+}
+
+foldGhosts :: GameState -> (Ghost -> Ghost) -> GameState
+foldGhosts gs@GameState{
+    blinky = gb,
+    pinky  = gp,
+    inky   = gi,
+    clyde  = gc
+} f = gs{
+    blinky = f gb,
+    pinky  = f gp,
+    inky   = f gi,
+    clyde  = f gc
 }
 
 setGameStatePacMan :: PacMan -> GameState -> GameState

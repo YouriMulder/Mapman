@@ -7,20 +7,7 @@ import Model
 import Maze
 
 resetState :: GameState -> GameState
-resetState gs@GameState{
-    maze=m,
-    blinky=gb,
-    pinky=gp,
-    inky=gi,
-    clyde=gc
-} = gs{
-    -- reset only part of the fields
-    pacman=resetPacMan,
-    blinky=resetGhost gb,
-    pinky=resetGhost gp,
-    inky=resetGhost gi,
-    clyde=resetGhost gc
-    }
+resetState gs@GameState{maze=m} = (foldGhosts gs resetGhost){pacman=resetPacMan}
     where 
         resetPacMan :: PacMan
         resetPacMan = PacMan (find PacmanStart m) East
