@@ -4,6 +4,16 @@
 module Serial where
 
 import Model 
+import Maze
+
+import System.Directory (
+        doesDirectoryExist,
+        doesFileExist,
+        createDirectory,
+        getCurrentDirectory
+    )
+import qualified Data.ByteString.Lazy as BS
+
 import Data.Aeson
 import qualified Data.Set as S
 
@@ -86,3 +96,52 @@ instance FromJSON GameState where
             keysPressed = S.empty
         }
 
+directory = "./data"
+file      = directory ++ "/level.mm"
+
+initializeSerial :: IO()
+initializeSerial = do
+    workingDirectory <- getCurrentDirectory
+
+    putStrLn $ "Working directory: " ++ (show workingDirectory)
+
+    directoryExists <- doesDirectoryExist directory
+    if not directoryExists then
+        do
+            createDirectory directory
+            writeFile file defaultMaze
+            putStrLn "Created data directory"
+    else
+        putStrLn "Found data directory"
+
+    fileExists <- doesFileExist file
+    if not fileExists then
+        do 
+            writeFile file defaultMaze
+            putStrLn "Created new level.mm file"
+    else
+        putStrLn "Found level.mm file"
+
+
+slotName :: Int -> String
+-- generate the filename for a save state slot
+slotName slot = directory ++ "/mapman" ++ show slot ++ ".json"
+
+dumpState :: GameState -> Int -> IO GameState
+-- dump gamestate to a savestate "slot" (mapman<slot>.json)
+dumpState gs slot = do
+    BS.writeFile (slotName slot) (encode gs)
+    return gs
+
+loadState :: Int -> IO (Maybe GameState)
+-- load gamestate from a savestate "slot"
+loadState slot = do
+    let fileName = slotName slot
+
+    fileExists <- doesFileExist fileName
+    if not fileExists  then do
+        putStrLn $ "Save state slot " ++ show slot ++ " does not exist"
+        return Nothing
+    else do
+        content <- BS.readFile (slotName slot)
+        return $ decode content

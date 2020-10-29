@@ -38,8 +38,6 @@ step secs gstate@GameState{lives=l}         = do
           randomPos :: StdGen -> Ghost -> Maybe Model.Point
           randomPos seed Ghost{gstate=(Scared _)}                 = Just $ randPoint seed
 
-          -- todo: bij keypresses de direction van de bestuurde ghost aanpassen
-
 handleKeysPressed :: GameState -> GameState
 handleKeysPressed gstate 
     = foldr keyHandler gstate (S.toList (keysPressed gstate))

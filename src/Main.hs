@@ -9,43 +9,13 @@ import Controller
 import View
 import Serial
 
-import System.Directory (
-        doesDirectoryExist,
-        doesFileExist,
-        createDirectory,
-        getCurrentDirectory
-    )
 import Data.Aeson
 import qualified Data.Set as S
 import Graphics.Gloss.Interface.IO.Game
 
-directory = "./data"
-file      = directory ++ "/level.mm"
-
-setupDataDirectory :: IO()
-setupDataDirectory = do
-    createDirectory directory
-    putStrLn "Created data directory"
-
-    writeFile file defaultMaze
-
 main :: IO()
 main = do 
-    workingDirectory <- getCurrentDirectory
-
-    putStrLn $ "Working directory: " ++ (show workingDirectory)
-
-    directoryExists <- doesDirectoryExist directory
-    if not directoryExists then
-        setupDataDirectory
-    else
-        putStrLn "Found data directory"
-
-    fileExists <- doesFileExist file
-    if not fileExists then
-        writeFile file defaultMaze
-    else
-        putStrLn "Found level.mm file"
+    initializeSerial
 
     contents <- readFile file
 
@@ -77,10 +47,18 @@ main = do
         keysPressed=    S.empty 
     }
 
+    -- proof of concept:
+    dumpState gameState 0
+
+    loaded <- loadState 1
+    let loadedGS = case loaded of
+                    Just gs -> gs
+                    Nothing -> gameState
+
     playIO (InWindow "MapMan" (windowWidth, windowHeight) (0, 0)) -- Or FullScreen
               black            -- Background color
               10               -- Frames per second
-              gameState        -- Initial state
+              loadedGS         -- Initial state
               view             -- View function
               input            -- Event function
               step             -- Step function
