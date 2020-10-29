@@ -48,19 +48,31 @@ readLine y = readLine' 0
                 readLine' 28 _        = []                                             -- full maze width reached
                 readLine' x (c:cs)    = ((Point x y), tile c):readLine' (x + 1) cs
 
-                tile c = case c of 
-                                'e' -> Empty
-                                ' ' -> Empty
-                                'p' -> Pellet
-                                'd' -> Dot
-                                'P' -> PacmanStart
-                                'G' -> GhostHouse
-                                _   -> Wall  -- this will automatically handle the newline case for us
-
+                tile 'e' = Empty
+                tile ' ' = Empty
+                tile 'p' = Pellet
+                tile 'd' = Dot
+                tile 'P' = PacmanStart
+                tile 'G' = GhostHouse
+                tile _   = Wall  -- this will automatically handle the newline case for us
 
 stringToMaze :: String -> Maze
 stringToMaze content =  
         M.fromList $ concatMap (uncurry readLine) (zip [0..mazeAmountOfCellsHeight - 1] $ lines content ++ repeat [])  -- fill missing lines with []
+
+mazeToString :: Maze -> String
+mazeToString m = unlines [
+                map pointToChar [(Point x y) | x <- [0..mazeAmountOfCellsWidth - 1]] | y <- [0..mazeAmountOfCellsHeight - 1]
+        ]
+        where   pointToChar = fieldToChar . flip getField m
+                fieldToChar :: Field -> Char
+                -- basically the reverse of the above
+                fieldToChar Empty       = ' '
+                fieldToChar Pellet      = 'p'
+                fieldToChar Dot         = 'd'
+                fieldToChar PacmanStart = 'P'
+                fieldToChar GhostHouse  = 'G'
+                fieldToChar Wall        = 'w'  
 
 -- count occurrences of a field within a maze
 count :: Field -> Maze -> Int

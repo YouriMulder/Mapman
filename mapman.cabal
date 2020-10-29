@@ -16,7 +16,8 @@ executable gloss-counter
                        unordered-containers -any,
                        gloss, 
                        random -any,
-                       aeson
+                       aeson,
+                       aeson-pretty
   hs-source-dirs:      src
   other-modules:       Controller, Maze, Ghosts, ControllerGhosts, Model, View, ControllerPacMan, ViewPacMan, ViewMaze, ViewGhost, State, Serial
   default-language:    Haskell2010
