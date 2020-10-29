@@ -43,13 +43,13 @@ main = do
         score=          0,
         highScore=      0,
         lives=          maxLives,
-        paused=         NotPaused,
+        runState=       Normal,
         keysPressed=    S.empty 
     }
 
     playIO (InWindow "MapMan" (ceiling windowWidth, ceiling windowHeight) (0, 0)) -- Or FullScreen
               black            -- Background color
-              10               -- Frames per second
+              fps              -- Frames per second
               gameState        -- Initial state
               view             -- View function
               input            -- Event function

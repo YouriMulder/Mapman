@@ -33,7 +33,7 @@ setPacManDirection direction (PacMan pPosition _) = PacMan pPosition direction
 
 pacManDeath :: GameState -> GameState
 pacManDeath gs@GameState{lives=0} = gameOver gs
-pacManDeath gs@GameState{lives=l} = (resetState gs){lives=l - 1}
+pacManDeath gs@GameState{lives=l} = (resetState gs){lives=l - 1, runState=Death $ 3 * fps}
 
 data Interaction = NoInteraction
                  | GhostKilled

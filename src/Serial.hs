@@ -68,7 +68,7 @@ instance ToJSON GameState where
             "score"     .= score gs,
             "highScore" .= highScore gs,
             "lives"     .= lives gs,
-            "paused"    .= toJSON (paused gs)
+            "runState"  .= toJSON (runState gs)
             -- we don't dump the keysPressed field
         ]
 
@@ -83,7 +83,7 @@ instance FromJSON GameState where
         score      <- obj .: "score"    
         highScore  <- obj .: "highScore"
         lives      <- obj .: "lives"    
-        paused     <- obj .: "paused"   
+        runState   <- obj .: "runState"   
         return GameState{
             maze        = stringToMaze $ unlines mazeString,
             pacman      = pacman,
@@ -94,7 +94,7 @@ instance FromJSON GameState where
             score       = score,
             highScore   = highScore,
             lives       = lives,
-            paused      = paused,
+            runState    = runState,
             keysPressed = S.empty
         }
 
