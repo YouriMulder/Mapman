@@ -18,15 +18,15 @@ viewPure gState = renderedMaze
         
         renderedMaze = 
             Translate 0 ((windowBotPadding/2)-(windowTopPadding/2)) $
-            Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vPaused, vScore]
-        vMaze   = renderMaze        $ maze   gState
-        vPacMan = renderGridLocated $ pacman gState
-        vBlinky = renderGridLocated $ blinky gState
-        vPinky  = renderGridLocated $ pinky  gState
-        vInky   = renderGridLocated $ inky   gState
-        vClyde  = renderGridLocated $ clyde  gState
-        vPaused = renderPaused      $ paused gState
-        vScore  = renderScore       $ score  gState
+            Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vRState, vScore]
+        vMaze   = renderMaze        $ maze     gState
+        vPacMan = renderGridLocated $ pacman   gState
+        vBlinky = renderGridLocated $ blinky   gState
+        vPinky  = renderGridLocated $ pinky    gState
+        vInky   = renderGridLocated $ inky     gState
+        vClyde  = renderGridLocated $ clyde    gState
+        vRState = renderRunState    $ runState gState
+        vScore  = renderScore       $ score    gState
 
 renderScore :: Int -> Picture
 renderScore score = 
@@ -35,14 +35,18 @@ renderScore score =
     Scale 0.10 0.10 $ 
     Text ("Score  " ++ show score)
 
-renderPaused :: Pause -> Picture
-renderPaused IsPaused = 
+renderTextOverlay :: Float -> String -> Picture
+renderTextOverlay x s = 
     Color white $
-    Translate (-125) 0 $
+    Translate x 0 $
     Scale 0.2 0.2 $ 
-    Text "Press p to continue"
-renderPaused _        = Blank 
+    Text s
 
+renderRunState :: RunState -> Picture
+renderRunState Paused       = renderTextOverlay (-125) "Press p to continue"
+renderRunState (Death n)    = renderTextOverlay (-75) $ "You Died (" ++ show (n `div` fps) ++ "...)"
+renderRunState (GameOver n) = renderTextOverlay (-75) $ "Game Over (" ++ show (n `div` fps) ++ "...)"
+renderRunState Normal       = Blank
 
 renderMaze :: Maze -> Picture
 renderMaze maze = Pictures $ renderedFields
