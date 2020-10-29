@@ -17,7 +17,7 @@ main :: IO()
 main = do 
     initializeSerial
 
-    contents <- readFile file
+    contents <- readFile levelFile
 
     let m = stringToMaze contents
 
@@ -48,12 +48,12 @@ main = do
     }
 
     -- proof of concept:
-    dumpState gameState 0
+    dumpState gameState 1
 
     loaded <- loadState 1
     let loadedGS = case loaded of
-                    Just gs -> gs
-                    Nothing -> gameState
+                       Just gs -> gs
+                       Nothing -> gameState
 
     playIO (InWindow "MapMan" (windowWidth, windowHeight) (0, 0)) -- Or FullScreen
               black            -- Background color

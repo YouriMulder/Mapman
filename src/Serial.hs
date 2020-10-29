@@ -16,6 +16,7 @@ import qualified Data.ByteString.Lazy as BS
 
 import Data.Aeson
 import qualified Data.Set as S
+import Graphics.Gloss.Interface.IO.Game
 
 instance ToJSON PacMan where
     toJSON pm = 
@@ -97,7 +98,7 @@ instance FromJSON GameState where
         }
 
 directory = "./data"
-file      = directory ++ "/level.mm"
+levelFile      = directory ++ "/level.mm"
 
 initializeSerial :: IO()
 initializeSerial = do
@@ -109,15 +110,15 @@ initializeSerial = do
     if not directoryExists then
         do
             createDirectory directory
-            writeFile file defaultMaze
+            writeFile levelFile defaultMaze
             putStrLn "Created data directory"
     else
         putStrLn "Found data directory"
 
-    fileExists <- doesFileExist file
+    fileExists <- doesFileExist levelFile
     if not fileExists then
         do 
-            writeFile file defaultMaze
+            writeFile levelFile defaultMaze
             putStrLn "Created new level.mm file"
     else
         putStrLn "Found level.mm file"
@@ -127,11 +128,10 @@ slotName :: Int -> String
 -- generate the filename for a save state slot
 slotName slot = directory ++ "/mapman" ++ show slot ++ ".json"
 
-dumpState :: GameState -> Int -> IO GameState
+dumpState :: GameState -> Int -> IO()
 -- dump gamestate to a savestate "slot" (mapman<slot>.json)
 dumpState gs slot = do
     BS.writeFile (slotName slot) (encode gs)
-    return gs
 
 loadState :: Int -> IO (Maybe GameState)
 -- load gamestate from a savestate "slot"
@@ -145,3 +145,38 @@ loadState slot = do
     else do
         content <- BS.readFile (slotName slot)
         return $ decode content
+
+getSlotID :: Key -> Int
+getSlotID (SpecialKey KeyF1) = 1
+getSlotID (SpecialKey KeyF2) = 2
+getSlotID (SpecialKey KeyF3) = 3
+getSlotID (SpecialKey KeyF4) = 4
+getSlotID (SpecialKey KeyF5) = 5
+getSlotID (Char '1') = 1
+getSlotID (Char '2') = 2
+getSlotID (Char '3') = 3
+getSlotID (Char '4') = 4
+getSlotID (Char '5') = 5
+getSlotID _          = error "Invalid save slot requested"
+
+-- check if we need to dump/load the state
+-- these actions require IO interaction, so we can't handle them in pure keyhandler functions anyway
+-- that's why we check this here
+checkDumpState :: GameState -> IO()
+checkDumpState gstate | S.size dumpKeys > 0 = do
+        dumpState gstate $ getSlotID $ S.findMin dumpKeys
+    where
+        dumpKeys = S.intersection (keysPressed gstate) (S.fromList $ map SpecialKey [KeyF1, KeyF2, KeyF3, KeyF4, KeyF5])
+checkDumpState _                            = return ()
+
+checkLoadState :: GameState -> IO GameState
+checkLoadState gstate | S.size loadKeys > 0 =
+     do
+        let loadKey = S.findMin loadKeys
+        loaded <- loadState $ getSlotID loadKey
+        let state = case loaded of
+                        Just newState -> newState
+                        Nothing       -> gstate
+        return state
+    where loadKeys = S.intersection (keysPressed gstate) (S.fromList $ map Char "12345")
+checkLoadState gstate                       = return gstate
