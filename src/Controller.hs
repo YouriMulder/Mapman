@@ -14,6 +14,7 @@ import Graphics.Gloss.Interface.IO.Game
 step :: Float -> GameState -> IO GameState
 step _    gstate@GameState{paused=IsPaused} = 
     return $ handleKeysPressed gstate
+
 step secs gstate = do
     gen <- newStdGen
 
@@ -23,13 +24,15 @@ step secs gstate = do
     gstateGhosts <- return $ updateGhosts loadedState $ randomPos gen
     gstatePacMan <- return $ updatePacMan gstateGhosts
     gstateInput  <- return $ handleKeysPressed gstatePacMan
-    return                 $ case ControllerPacMan.interactState gstateInput of 
-                                Nothing -> pacManDeath gstateInput
+    gstateMaze   <- return $ ControllerPacMan.interactMaze gstateInput
+
+    return                 $ case ControllerPacMan.interactState gstateMaze of 
+                                Nothing -> pacManDeath gstateMaze
                                 Just gs -> gs
 
     where -- only needed for scared/player controlled ghosts, others are already handled in the updateGhosts function:
           randPoint :: StdGen -> Model.Point
-          randPoint seed = let (x, ySeed) = randomR (0, mazeWidth) seed in (Point x $ fst $ randomR (0, mazeHeight) ySeed) 
+          randPoint seed = let (x, ySeed) = randomR (0, mazeAmountOfCellsWidth) seed in (Point x $ fst $ randomR (0, mazeAmountOfCellsHeight) ySeed) 
 
           randomPos :: StdGen -> Ghost -> Maybe Model.Point
           randomPos seed Ghost{gstate=(Scared _)}                 = Just $ randPoint seed

@@ -46,10 +46,10 @@ In frightened mode, the target is a pseudorandom direction
 -}
 
 ghostCorner :: GhostName -> Point
-ghostCorner Pinky  = Point 2                0
-ghostCorner Blinky = Point (mazeWidth - 3)  0
-ghostCorner Clyde  = Point 2             $  mazeHeight - 1
-ghostCorner Inky   = Point (mazeWidth - 3) (mazeHeight - 1)
+ghostCorner Pinky  = Point 2                                0
+ghostCorner Blinky = Point (mazeAmountOfCellsWidth - 3)     0
+ghostCorner Clyde  = Point 2                                $  mazeAmountOfCellsHeight -    1
+ghostCorner Inky   = Point (mazeAmountOfCellsWidth - 3)     (mazeAmountOfCellsHeight - 1)
 
 pinkyTarget :: Point -> Direction -> Point
 -- pinky's movement is based on Pac-man's position and direction

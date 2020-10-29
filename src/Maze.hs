@@ -44,15 +44,15 @@ defaultMaze = unlines [
 readLine :: Int -> String -> [(Point, Field)]
 readLine y = readLine' 0
         where   readLine' :: Int -> String -> [(Point, Field)]
-                readLine' x []        = [((Point dx y), Wall) | dx <- [x..mazeWidth - 1]]  -- if line is empty, fill with walls
+                readLine' x []        = [((Point dx y), Wall) | dx <- [x..mazeAmountOfCellsWidth - 1]]  -- if line is empty, fill with walls
                 readLine' 28 _        = []                                             -- full maze width reached
                 readLine' x (c:cs)    = ((Point x y), tile c):readLine' (x + 1) cs
 
                 tile c = case c of 
                                 'e' -> Empty
                                 ' ' -> Empty
-                                'p' -> Palette
-                                'f' -> Fruit
+                                'p' -> Pellet
+                                'd' -> Dot
                                 'P' -> PacmanStart
                                 'G' -> GhostHouse
                                 _   -> Wall  -- this will automatically handle the newline case for us
@@ -60,7 +60,7 @@ readLine y = readLine' 0
 
 stringToMaze :: String -> Maze
 stringToMaze content =  
-        M.fromList $ concatMap (uncurry readLine) (zip [0..mazeHeight - 1] $ lines content ++ repeat [])  -- fill missing lines with []
+        M.fromList $ concatMap (uncurry readLine) (zip [0..mazeAmountOfCellsHeight - 1] $ lines content ++ repeat [])  -- fill missing lines with []
 
 -- count occurrences of a field within a maze
 count :: Field -> Maze -> Int
@@ -84,6 +84,9 @@ find f = fst . M.findMin . M.filter (== f)  -- first element is the key (point)
 
 getField :: Point -> Maze -> Field
 getField = M.findWithDefault Wall
+
+deleteField :: Point -> Maze -> Maze
+deleteField p = M.adjust (\_ -> Empty) p 
 
 -- Returns True if direction is possible, otherwise False
 isValidDirection :: Direction -> Point -> Maze -> Bool
