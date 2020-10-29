@@ -3,6 +3,7 @@ module ControllerPacMan where
 import Model
 import State
 import Maze
+import Ghosts
 
 import Debug.Trace
 
@@ -75,6 +76,6 @@ interactMaze :: GameState -> GameState
 interactMaze gstate@GameState{pacman=pm, score=s, maze=m} = 
     case Maze.getField pmPosition m of
         Dot     -> gstate{score=s + dotScore, maze=deleteField pmPosition m}
-        Pellet  -> gstate{score=s + palletScore, maze=deleteField pmPosition m}
+        Pellet  -> mapGhosts gstate{score=s + palletScore, maze=deleteField pmPosition m} scare
         _       -> gstate
     where pmPosition = getLocation pm

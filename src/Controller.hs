@@ -50,10 +50,10 @@ keyHandler _ gstate = gstate
 
 charKeyHandler :: Char -> GameState -> GameState
 charKeyHandler 'p'  gstate = togglePause gstate
-charKeyHandler 'w'  gstate = foldGhosts gstate (flip setDirection North)
-charKeyHandler 'a'  gstate = foldGhosts gstate (flip setDirection West)
-charKeyHandler 's'  gstate = foldGhosts gstate (flip setDirection South)
-charKeyHandler 'd'  gstate = foldGhosts gstate (flip setDirection East)
+charKeyHandler 'w'  gstate = mapGhosts gstate (flip setDirection North)
+charKeyHandler 'a'  gstate = mapGhosts gstate (flip setDirection West)
+charKeyHandler 's'  gstate = mapGhosts gstate (flip setDirection South)
+charKeyHandler 'd'  gstate = mapGhosts gstate (flip setDirection East)
 charKeyHandler _    gstate = gstate
 
 specialKeyHandler :: SpecialKey -> GameState -> GameState

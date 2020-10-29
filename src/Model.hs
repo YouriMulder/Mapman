@@ -161,8 +161,8 @@ data GameState = GameState {
     keysPressed :: S.Set Key
 }
 
-foldGhosts :: GameState -> (Ghost -> Ghost) -> GameState
-foldGhosts gs@GameState{
+mapGhosts :: GameState -> (Ghost -> Ghost) -> GameState
+mapGhosts gs@GameState{
     blinky = gb,
     pinky  = gp,
     inky   = gi,
