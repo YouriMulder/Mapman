@@ -10,7 +10,7 @@ wppppppwwppppwwppppwwppppppw
 wwwwwwpwwwww ww wwwwwpwwwwww
 wwwwwwpwwwww ww wwwwwpwwwwww
 wwwwwwpww          wwpwwwwww
-wwwwwwpww wwww www wwpwwwwww
+wwwwwwpww wwwwGwww wwpwwwwww
 wwwwwwpww wwwwwwww wwpwwwwww
       p   wwwwwwww   p      
 wwwwwwpww wwwwwwww wwpwwwwww
@@ -21,7 +21,7 @@ wwwwwwpww wwwwwwww wwpwwwwww
 wppppppppppppwwppppppppppppw
 wpwwwwpwwwwwpwwpwwwwwpwwwwpw
 wpwwwwpwwwwwpwwpwwwwwpwwwwpw
-wfppwwppppppp  pppppppwwppfw
+wfppwwppppppp Ppppppppwwppfw
 wwwpwwpwwpwwwwwwwwpwwpwwpwww
 wwwpwwpwwpwwwwwwwwpwwpwwpwww
 wppppppwwppppwwppppwwppppppw

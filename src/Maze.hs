@@ -109,11 +109,6 @@ reachable start m = S.toList $ fst $ traverse (S.empty, S.singleton start)
 
 -- return Nothing if maze is valid, otherwise, return a reason why it is not
 validMaze :: Maze -> Maybe String
--- = mazeSize            m 
--- && onePacmanStart   m
--- && oneGhostHouse    m
--- && traversable      m
--- && (not . deadEnds) m
 validMaze m | not mazeSize         = Just "Maze is not of the right size, expected "
               where mazeSize       = M.size m == mazeWidth * mazeHeight && all (flip M.member m) validPoints  -- all points must be set
                     validPoints    = [(Point x y) | x <- [0..mazeWidth - 1], y <- [0..mazeHeight - 1]]
