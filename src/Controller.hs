@@ -6,6 +6,8 @@ import ControllerPacMan
 import ControllerGhosts
 import Serial
 
+import Debug.Trace
+
 import qualified Data.Set as S
 import System.Random
 import Graphics.Gloss
@@ -56,6 +58,16 @@ charKeyHandler 'w'  gstate = mapGhosts gstate (flip setDirection North)
 charKeyHandler 'a'  gstate = mapGhosts gstate (flip setDirection West)
 charKeyHandler 's'  gstate = mapGhosts gstate (flip setDirection South)
 charKeyHandler 'd'  gstate = mapGhosts gstate (flip setDirection East)
+charKeyHandler '9'  gstate =
+    ((setGameStateGhostPlayer (blinky gstate)) . setGhostsComputerControlled) gstate
+charKeyHandler '8'  gstate =
+    ((setGameStateGhostPlayer (inky gstate)) . setGhostsComputerControlled) gstate
+charKeyHandler '7'  gstate =
+    ((setGameStateGhostPlayer (pinky gstate)) . setGhostsComputerControlled) gstate
+charKeyHandler '6'  gstate =
+    ((setGameStateGhostPlayer (clyde gstate)) . setGhostsComputerControlled) gstate
+
+
 charKeyHandler _    gstate = gstate
 
 specialKeyHandler :: SpecialKey -> GameState -> GameState
@@ -65,11 +77,9 @@ specialKeyHandler KeyLeft  gstate = updatePacManDirection' West  gstate
 specialKeyHandler KeyRight gstate = updatePacManDirection' East  gstate
 specialKeyHandler _        gstate = gstate 
 
+updatePacManDirection' :: Direction -> GameState -> GameState
 updatePacManDirection' d gstate = 
     setGameStatePacMan (updatePacManDirection d (pacman gstate) (maze gstate)) gstate
-
--- step :: Float -> GameState -> IO GameState
--- step secs = return
 
 
 input :: Event -> GameState -> IO GameState

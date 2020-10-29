@@ -5,7 +5,6 @@ import State
 import Maze
 import Ghosts
 
-import Debug.Trace
 
 instance GridLocated PacMan where
     move = undefined
