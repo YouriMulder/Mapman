@@ -55,7 +55,7 @@ main = do
                        Just gs -> gs
                        Nothing -> gameState
 
-    playIO (InWindow "MapMan" (windowWidth, windowHeight) (0, 0)) -- Or FullScreen
+    playIO (InWindow "MapMan" (ceiling windowWidth, ceiling windowHeight) (0, 0)) -- Or FullScreen
               black            -- Background color
               10               -- Frames per second
               loadedGS         -- Initial state

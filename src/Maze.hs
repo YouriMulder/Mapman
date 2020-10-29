@@ -8,35 +8,35 @@ import qualified Data.Set as S
 defaultMaze :: String
 defaultMaze = unlines [
         "wwwwwwwwwwwwwwwwwwwwwwwwwwww",
-        "wppppppppppppwwppppppppppppw",
-        "wpwwwwpwwwwwpwwpwwwwwpwwwwpw",
-        "wpwwwwpwwwwwpwwpwwwwwpwwwwpw",
-        "wfwwwwpwwwwwpwwpwwwwwpwwwwfw",
-        "wppppppppppppppppppppppppppw",
-        "wpwwwwpwwpwwwwwwwwpwwpwwwwpw",
-        "wpwwwwpwwpwwwwwwwwpwwpwwwwpw",
-        "wppppppwwppppwwppppwwppppppw",
-        "wwwwwwpwwwww ww wwwwwpwwwwww",
-        "wwwwwwpwwwww ww wwwwwpwwwwww",
-        "wwwwwwpww          wwpwwwwww",
-        "wwwwwwpww wwwwGwww wwpwwwwww",
-        "wwwwwwpww wwwwwwww wwpwwwwww",
-        "      p   wwwwwwww   p      ",
-        "wwwwwwpww wwwwwwww wwpwwwwww",
-        "wwwwwwpww wwwwwwww wwpwwwwww",
-        "wwwwwwpww          wwpwwwwww",
-        "wwwwwwpww wwwwwwww wwpwwwwww",
-        "wwwwwwpww wwwwwwww wwpwwwwww",
-        "wppppppppppppwwppppppppppppw",
-        "wpwwwwpwwwwwpwwpwwwwwpwwwwpw",
-        "wpwwwwpwwwwwpwwpwwwwwpwwwwpw",
-        "wfppwwppppppp Ppppppppwwppfw",
-        "wwwpwwpwwpwwwwwwwwpwwpwwpwww",
-        "wwwpwwpwwpwwwwwwwwpwwpwwpwww",
-        "wppppppwwppppwwppppwwppppppw",
-        "wpwwwwwwwwwwpwwpwwwwwwwwwwpw",
-        "wpwwwwwwwwwwpwwpwwwwwwwwwwpw",
-        "wppppppppppppppppppppppppppw",
+        "wddddddddddddwwddddddddddddw",
+        "wdwwwwdwwwwwdwwdwwwwwdwwwwdw",
+        "wpwwwwdwwwwwdwwdwwwwwdwwwwpw",
+        "wdwwwwdwwwwwdwwdwwwwwdwwwwdw",
+        "wddddddddddddddddddddddddddw",
+        "wdwwwwdwwdwwwwwwwwdwwdwwwwdw",
+        "wdwwwwdwwdwwwwwwwwdwwdwwwwdw",
+        "wddddddwwddddwwddddwwddddddw",
+        "wwwwwwdwwwww ww wwwwwdwwwwww",
+        "wwwwwwdwwwww ww wwwwwdwwwwww",
+        "wwwwwwdww          wwdwwwwww",
+        "wwwwwwdww wwwwGwww wwdwwwwww",
+        "wwwwwwdww wwwwwwww wwdwwwwww",
+        "      d   wwwwwwww   d      ",
+        "wwwwwwdww wwwwwwww wwdwwwwww",
+        "wwwwwwdww wwwwwwww wwdwwwwww",
+        "wwwwwwdww          wwdwwwwww",
+        "wwwwwwdww wwwwwwww wwdwwwwww",
+        "wwwwwwdww wwwwwwww wwdwwwwww",
+        "wddddddddddddwwddddddddddddw",
+        "wdwwwwdwwwwwdwwdwwwwwdwwwwdw",
+        "wdwwwwdwwwwwdwwdwwwwwdwwwwdw",
+        "wpddwwdddddddPddddddddwwddpw",
+        "wwwdwwdwwdwwwwwwwwdwwdwwdwww",
+        "wwwdwwdwwdwwwwwwwwdwwdwwdwww",
+        "wddddddwwddddwwddddwwddddddw",
+        "wdwwwwwwwwwwdwwdwwwwwwwwwwdw",
+        "wdwwwwwwwwwwdwwdwwwwwwwwwwdw",
+        "wddddddddddddddddddddddddddw",
         "wwwwwwwwwwwwwwwwwwwwwwwwwwww"
         ]
 
@@ -113,8 +113,8 @@ reachable start m = S.toList $ fst $ traverse (S.empty, S.singleton start)
 -- return Nothing if maze is valid, otherwise, return a reason why it is not
 validMaze :: Maze -> Maybe String
 validMaze m | not mazeSize         = Just "Maze is not of the right size, expected "
-              where mazeSize       = M.size m == mazeWidth * mazeHeight && all (flip M.member m) validPoints  -- all points must be set
-                    validPoints    = [(Point x y) | x <- [0..mazeWidth - 1], y <- [0..mazeHeight - 1]]
+              where mazeSize       = M.size m == mazeAmountOfCellsWidth * mazeAmountOfCellsHeight && all (flip M.member m) validPoints  -- all points must be set
+                    validPoints    = [(Point x y) | x <- [0..mazeAmountOfCellsWidth - 1], y <- [0..mazeAmountOfCellsHeight - 1]]
 validMaze m | not onePacmanStart   = Just ("Expected one pacman starting position, got " ++ (show $ count PacmanStart m))
               where onePacmanStart = count PacmanStart m == 1
 validMaze m | not oneGhostHouse    = Just ("Expected one ghost house, got " ++ (show $ count GhostHouse m))
