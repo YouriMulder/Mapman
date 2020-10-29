@@ -43,8 +43,9 @@ main = do
         score=          0,
         highScore=      0,
         lives=          maxLives,
-        runState=       Normal,
-        keysPressed=    S.empty 
+        runState=       Paused,
+        keysPressed=    S.empty,
+        initialMaze=    maze
     }
 
     playIO (InWindow "MapMan" (ceiling windowWidth, ceiling windowHeight) (0, 0)) -- Or FullScreen

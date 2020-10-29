@@ -67,8 +67,9 @@ instance ToJSON GameState where
             "clyde"     .= toJSON (clyde gs),
             "score"     .= score gs,
             "highScore" .= highScore gs,
+            "runState"  .= toJSON (runState gs),
             "lives"     .= lives gs,
-            "runState"  .= toJSON (runState gs)
+            "initialMaze"      .= (lines $ mazeToString (initialMaze gs))
             -- we don't dump the keysPressed field
         ]
 
@@ -82,8 +83,9 @@ instance FromJSON GameState where
         clyde      <- obj .: "clyde"    
         score      <- obj .: "score"    
         highScore  <- obj .: "highScore"
-        lives      <- obj .: "lives"    
         runState   <- obj .: "runState"   
+        lives      <- obj .: "lives"    
+        initialMazeString <- obj .: "initialMaze"  
         return GameState{
             maze        = stringToMaze $ unlines mazeString,
             pacman      = pacman,
@@ -95,7 +97,8 @@ instance FromJSON GameState where
             highScore   = highScore,
             lives       = lives,
             runState    = runState,
-            keysPressed = S.empty
+            keysPressed = S.empty,
+            initialMaze = stringToMaze $ unlines initialMazeString
         }
 
 directory = "./data"
