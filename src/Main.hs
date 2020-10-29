@@ -47,18 +47,10 @@ main = do
         keysPressed=    S.empty 
     }
 
-    -- proof of concept:
-    dumpState gameState 1
-
-    loaded <- loadState 1
-    let loadedGS = case loaded of
-                       Just gs -> gs
-                       Nothing -> gameState
-
     playIO (InWindow "MapMan" (ceiling windowWidth, ceiling windowHeight) (0, 0)) -- Or FullScreen
               black            -- Background color
               10               -- Frames per second
-              loadedGS         -- Initial state
+              gameState        -- Initial state
               view             -- View function
               input            -- Event function
               step             -- Step function
