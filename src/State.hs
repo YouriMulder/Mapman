@@ -7,7 +7,7 @@ import Model
 import Maze
 
 resetState :: GameState -> GameState
-resetState gs@GameState{maze=m} = (foldGhosts gs resetGhost){pacman=resetPacMan}
+resetState gs@GameState{maze=m} = (mapGhosts gs resetGhost){pacman=resetPacMan}
     where 
         resetPacMan :: PacMan
         resetPacMan = PacMan (find PacmanStart m) East

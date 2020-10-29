@@ -1,5 +1,6 @@
 module Ghosts (
-    updateGhosts
+    updateGhosts,
+    scare
 ) where
 
 import Model 
@@ -112,10 +113,15 @@ ghostDir Ghost{gpos=gp, gdir=gd} p m = case choices of
         ord d = (dist p $ moveFrom gp d, d)
 
 refreshScatter :: GhostName -> GhostState
-refreshScatter _ = Scatter 50  -- (frames) todo: timings (match on name)
+refreshScatter _ = Scatter 50  -- (frames) todo: timings
 
 refreshScary :: GhostName -> GhostState
-refreshScary _ = Scary 50      -- (frames) todo: timings (match on name)
+refreshScary _ = Scary 50      -- (frames) todo: timings
+
+scare :: Ghost -> Ghost
+scare g@Ghost{gstate=Dead} = g  -- can't scare a dead ghost
+-- when a ghost gets scared, the direction he is moving in flips
+scare g@Ghost{gdir=gd}     = g{gdir=opposite gd, gstate=Scared 100}  -- todo: timings
 
 ghostMove :: Ghost -> PacMan -> Maybe Point -> Maze -> Ghost
 ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c (nextState s)
@@ -139,7 +145,7 @@ ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c (nextState s)
 
 updateGhosts :: GameState -> (Ghost -> Maybe Point) -> GameState
 -- blinky is needed for inky's auxiliary position
-updateGhosts gs@GameState{pacman=pm, maze=m, blinky=gb} rand = foldGhosts gs updateGhost
+updateGhosts gs@GameState{pacman=pm, maze=m, blinky=gb} rand = mapGhosts gs updateGhost
     where auxPos :: Ghost -> Maybe Point
           auxPos Ghost{gstate=Dead}         = Just $ find GhostHouse m
           auxPos g@Ghost{gstate=(Scared _)} = rand g
