@@ -1,6 +1,8 @@
 module Ghosts (
     updateGhosts,
-    scare
+    scare,
+    refreshScary,
+    refreshScatter
 ) where
 
 import Model 
@@ -112,16 +114,16 @@ ghostDir Ghost{gpos=gp, gdir=gd} p m = case choices of
         ord :: Direction -> (Int, Direction)
         ord d = (dist p $ moveFrom gp d, d)
 
-refreshScatter :: GhostName -> GhostState
-refreshScatter _ = Scatter 50  -- (frames) todo: timings
+refreshScatter :: GhostState
+refreshScatter = Scatter $ 6 * fps
 
-refreshScary :: GhostName -> GhostState
-refreshScary _ = Scary 50      -- (frames) todo: timings
+refreshScary :: GhostState
+refreshScary = Scary $ 20 * fps
 
 scare :: Ghost -> Ghost
 scare g@Ghost{gstate=Dead} = g  -- can't scare a dead ghost
 -- when a ghost gets scared, the direction he is moving in flips
-scare g@Ghost{gdir=gd}     = g{gdir=opposite gd, gstate=Scared 100}  -- todo: timings
+scare g@Ghost{gdir=gd}     = g{gdir=opposite gd, gstate=Scared $ 8 * fps}
 
 ghostMove :: Ghost -> PacMan -> Maybe Point -> Maze -> Ghost
 ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c (nextState s)
@@ -129,17 +131,17 @@ ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c (nextState s)
           nextPos = moveFrom gp dir
         
           nextState :: GhostState -> GhostState
-          nextState (Scary   1) = refreshScatter n
+          nextState (Scary   1) = refreshScatter
           nextState (Scary   t) = Scary (t - 1)
-          nextState (Scatter 1) = refreshScary   n
-          nextState (Scatter t) = Scatter   (t - 1)
-          nextState (Scared  1) = refreshScatter n
+          nextState (Scatter 1) = refreshScary
+          nextState (Scatter t) = Scatter (t - 1)
+          nextState (Scared  1) = refreshScatter
           nextState (Scared  t) = Scared  (t - 1)
 
           -- when the ghost is dead, the p parameter is the ghost house, as mentioned above
           nextState Dead        = case p of
               (Just gh) -> if dist nextPos gh == 1 
-                           then refreshScary n -- next to ghosthouse position
+                           then refreshScary -- next to ghosthouse position
                            else Dead
               _         -> Dead 
 

@@ -28,10 +28,10 @@ main = do
     putStrLn message
         
     let pacMan = PacMan (find PacmanStart maze) West
-    let pinky  = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Pinky  Computer (Scatter 100)
-    let inky   = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Inky   Computer (Scatter 100)
-    let blinky = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Blinky Computer (Scatter 100)
-    let clyde  = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Clyde  (Player West) (Scatter 100)
+    let pinky  = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Pinky  Computer refreshScatter
+    let inky   = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Inky   Computer refreshScatter
+    let blinky = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Blinky Computer refreshScatter
+    let clyde  = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Clyde  Computer refreshScatter
 
     let gameState = GameState {
         maze=           maze,

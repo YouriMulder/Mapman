@@ -40,13 +40,13 @@ defaultMaze = unlines [
         "wwwwwwwwwwwwwwwwwwwwwwwwwwww"
         ]
 
--- todo: match on constant for maze width
 readLine :: Int -> String -> [(Point, Field)]
 readLine y = readLine' 0
         where   readLine' :: Int -> String -> [(Point, Field)]
-                readLine' x []        = [((Point dx y), Wall) | dx <- [x..mazeAmountOfCellsWidth - 1]]  -- if line is empty, fill with walls
-                readLine' 28 _        = []                                             -- full maze width reached
-                readLine' x (c:cs)    = ((Point x y), tile c):readLine' (x + 1) cs
+                        -- if line is empty/too short, fill with walls:
+                readLine' x []                              = [((Point dx y), Wall) | dx <- [x..mazeAmountOfCellsWidth - 1]]
+                readLine' x _ | x == mazeAmountOfCellsWidth = [] -- full maze width reached
+                readLine' x (c:cs)                          = ((Point x y), tile c):readLine' (x + 1) cs
 
                 tile 'e' = Empty
                 tile ' ' = Empty
