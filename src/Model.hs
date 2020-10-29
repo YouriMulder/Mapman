@@ -151,6 +151,7 @@ data RunState = Normal
               | Paused
               | Death Int  -- countdown
               | GameOver Int
+              | Victory Int
     deriving (Generic, ToJSON, FromJSON, Eq, Show)
 
 data GameState = GameOverGameState | GameState {

@@ -2,6 +2,8 @@ module Controller where
 
 import Model
 import Ghosts
+import State
+import Maze
 import ControllerPacMan
 import ControllerGhosts
 import Serial
@@ -12,25 +14,32 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
 step :: Float -> GameState -> IO GameState
-step _    gstate@GameState{runState=Paused}     = return $ handleKeysPressed gstate
-step _    gstate@GameState{runState=Death 0}    = return $ gstate{runState=Normal}
-step _    gstate@GameState{runState=Death n}    = return $ gstate{runState=Death $ n - 1}
-step _    gstate@GameState{runState=GameOver 0} = return $ gstate{runState=Normal}
-step _    gstate@GameState{runState=GameOver n} = return $ gstate{runState=GameOver $ n - 1}
+step _    gstate@GameState{runState=Paused}              = return $ handleKeysPressed gstate
+step _    gstate@GameState{runState=Death 0}             = return $ gstate{runState=Normal}
+step _    gstate@GameState{runState=Death n}             = return $ gstate{runState=Death $ n - 1}
+step _    gstate@GameState{runState=GameOver 0}          = return $ gstate{runState=Normal}
+step _    gstate@GameState{runState=GameOver n}          = return $ gstate{runState=GameOver $ n - 1}
+step _    gstate@GameState{runState=Victory 0, score=s}  = return $ (gameOver gstate){runState=Normal, score=s}
+step _    gstate@GameState{runState=Victory n}           = return $ gstate{runState=Victory $ n - 1}
 step secs gstate = do
     gen <- newStdGen
 
     checkDumpState gstate
     loadedState <- checkLoadState gstate
+    
+    let finalState = 
+            case ControllerPacMan.interactState
+                . ControllerPacMan.interactMaze
+                . updatePacMan
+                . updateGhosts (randomPos gen)
+                . handleKeysPressed $ loadedState
+            of 
+                Nothing -> pacManDeath gstate
+                Just gs -> gs
 
-    gstateGhosts <- return $ updateGhosts loadedState $ randomPos gen
-    gstatePacMan <- return $ updatePacMan gstateGhosts
-    gstateInput  <- return $ handleKeysPressed gstatePacMan
-    gstateMaze   <- return $ ControllerPacMan.interactMaze gstateInput
-
-    return                 $ case ControllerPacMan.interactState gstateMaze of 
-                                Nothing -> pacManDeath gstateMaze
-                                Just gs -> gs
+    -- check if victory has been achieved!
+    return $ victoryCheck 
+           . updateScore $ finalState
 
     where -- only needed for scared/player controlled ghosts, others are already handled in the updateGhosts function:
           randPoint :: StdGen -> Model.Point

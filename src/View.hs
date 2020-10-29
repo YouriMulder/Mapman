@@ -60,8 +60,9 @@ renderTextOverlay x s =
 
 renderRunState :: RunState -> Picture
 renderRunState Paused       = renderTextOverlay (-125) "Press p to continue"
-renderRunState (Death n)    = renderTextOverlay (-75) $ "You Died (" ++ show (n `div` fps) ++ "...)"
-renderRunState (GameOver n) = renderTextOverlay (-75) $ "Game Over (" ++ show (n `div` fps) ++ "...)"
+renderRunState (Death n)    = renderTextOverlay (-75) $ "You Died (" ++ show ((n + fps - 1) `div` fps) ++ "...)"
+renderRunState (GameOver n) = renderTextOverlay (-75) $ "Game Over (" ++ show ((n + fps - 1) `div` fps) ++ "...)"
+renderRunState (Victory n)  = renderTextOverlay (-75) $ "You Won! (" ++ show ((n + fps - 1) `div` fps) ++ "...)"
 renderRunState Normal       = Blank
 
 renderMaze :: Maze -> Picture

@@ -145,9 +145,9 @@ ghostMove g@(Ghost gp _ n c s) pm p m = Ghost nextPos dir n c (nextState s)
                            else Dead
               _         -> Dead 
 
-updateGhosts :: GameState -> (Ghost -> Maybe Point) -> GameState
+updateGhosts :: (Ghost -> Maybe Point) -> GameState -> GameState
 -- blinky is needed for inky's auxiliary position
-updateGhosts gs@GameState{pacman=pm, maze=m, blinky=gb} rand = mapGhosts gs updateGhost
+updateGhosts rand gs@GameState{pacman=pm, maze=m, blinky=gb} = mapGhosts gs updateGhost
     where auxPos :: Ghost -> Maybe Point
           auxPos Ghost{gstate=Dead}         = Just $ find GhostHouse m
           auxPos g@Ghost{gstate=(Scared _)} = rand g
