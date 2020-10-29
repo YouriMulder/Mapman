@@ -18,7 +18,7 @@ viewPure gState = renderedMaze
         
         renderedMaze = 
             Translate 0 ((windowBotPadding/2)-(windowTopPadding/2)) $
-            Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vPaused, vScore]
+            Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vPaused, vScore, vHighScore, vLives]
         vMaze   = renderMaze        $ maze   gState
         vPacMan = renderGridLocated $ pacman gState
         vBlinky = renderGridLocated $ blinky gState
@@ -27,6 +27,22 @@ viewPure gState = renderedMaze
         vClyde  = renderGridLocated $ clyde  gState
         vPaused = renderPaused      $ paused gState
         vScore  = renderScore       $ score  gState
+        vHighScore = renderHighScore $ highScore gState 
+        vLives  = renderLives       $ lives gState
+
+renderLives :: Int -> Picture
+renderLives lives = 
+    Color white $
+    Translate (-windowWidth/2) ((-windowHeight/2) + (windowBotPadding*0.2)) $
+    Scale 0.10 0.10 $ 
+    Text ("lives  " ++ show lives)
+
+renderHighScore :: Int -> Picture
+renderHighScore highScore = 
+    Color white $
+    Translate (0) ((windowHeight/2) - (windowTopPadding*0.8)) $
+    Scale 0.10 0.10 $ 
+    Text ("HighScore  " ++ show highScore)
 
 renderScore :: Int -> Picture
 renderScore score = 

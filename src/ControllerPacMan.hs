@@ -31,8 +31,9 @@ updatePacManDirection direction pacMan@(PacMan pPosition _) m =
 setPacManDirection :: Direction -> PacMan -> PacMan
 setPacManDirection direction (PacMan pPosition _) = PacMan pPosition direction
 
+-- Dies at 1 because of decrement in this function
 pacManDeath :: GameState -> GameState
-pacManDeath gs@GameState{lives=0} = gameOver gs
+pacManDeath gs@GameState{lives=1} = gameOver gs
 pacManDeath gs@GameState{lives=l} = (resetState gs){lives=l - 1}
 
 data Interaction = NoInteraction

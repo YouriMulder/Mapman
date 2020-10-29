@@ -146,7 +146,7 @@ palletScore = 50
 data Pause = IsPaused | NotPaused
     deriving (Generic, ToJSON, FromJSON, Eq, Show)
 
-data GameState = GameState {
+data GameState = GameOverGameState | GameState {
     maze      :: Maze,
     pacman    :: PacMan,
     blinky    :: Ghost,
@@ -157,7 +157,8 @@ data GameState = GameState {
     highScore :: Int,
     lives     :: Int,
     paused    :: Pause,
-    keysPressed :: S.Set Key
+    keysPressed :: S.Set Key,
+    initialMaze :: Maze
 }
 
 mapGhosts :: GameState -> (Ghost -> Ghost) -> GameState
