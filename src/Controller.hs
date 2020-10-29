@@ -4,27 +4,23 @@ import Model
 import Ghosts
 import ControllerPacMan
 import ControllerGhosts
+import Serial
 
 import qualified Data.Set as S
 import System.Random
-
-{- debugging stuff -}
-import Maze
-{- /debugging stuff -}
-
-import ControllerPacMan
-
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
 step :: Float -> GameState -> IO GameState
 step _    gstate@GameState{paused=IsPaused} = 
     return $ handleKeysPressed gstate
-step secs gstate@GameState{lives=l}         = do
-    print l
-
+step secs gstate = do
     gen <- newStdGen
-    gstateGhosts <- return $ updateGhosts gstate $ randomPos gen
+
+    checkDumpState gstate
+    loadedState <- checkLoadState gstate
+
+    gstateGhosts <- return $ updateGhosts loadedState $ randomPos gen
     gstatePacMan <- return $ updatePacMan gstateGhosts
     gstateInput  <- return $ handleKeysPressed gstatePacMan
     return                 $ case ControllerPacMan.interactState gstateInput of 
@@ -37,8 +33,6 @@ step secs gstate@GameState{lives=l}         = do
 
           randomPos :: StdGen -> Ghost -> Maybe Model.Point
           randomPos seed Ghost{gstate=(Scared _)}                 = Just $ randPoint seed
-
-          -- todo: bij keypresses de direction van de bestuurde ghost aanpassen
 
 handleKeysPressed :: GameState -> GameState
 handleKeysPressed gstate 

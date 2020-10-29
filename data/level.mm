@@ -1,0 +1,31 @@
+wwwwwwwwwwwwwwwwwwwwwwwwwwww
+wppppppppppppwwppppppppppppw
+wpwwwwpwwwwwpwwpwwwwwpwwwwpw
+wpwwwwpwwwwwpwwpwwwwwpwwwwpw
+wfwwwwpwwwwwpwwpwwwwwpwwwwfw
+wppppppppppppppppppppppppppw
+wpwwwwpwwpwwwwwwwwpwwpwwwwpw
+wpwwwwpwwpwwwwwwwwpwwpwwwwpw
+wppppppwwppppwwppppwwppppppw
+wwwwwwpwwwww ww wwwwwpwwwwww
+wwwwwwpwwwww ww wwwwwpwwwwww
+wwwwwwpww          wwpwwwwww
+wwwwwwpww wwwwGwww wwpwwwwww
+wwwwwwpww wwwwwwww wwpwwwwww
+      p   wwwwwwww   p      
+wwwwwwpww wwwwwwww wwpwwwwww
+wwwwwwpww wwwwwwww wwpwwwwww
+wwwwwwpww          wwpwwwwww
+wwwwwwpww wwwwwwww wwpwwwwww
+wwwwwwpww wwwwwwww wwpwwwwww
+wppppppppppppwwppppppppppppw
+wpwwwwpwwwwwpwwpwwwwwpwwwwpw
+wpwwwwpwwwwwpwwpwwwwwpwwwwpw
+wfppwwppppppp Ppppppppwwppfw
+wwwpwwpwwpwwwwwwwwpwwpwwpwww
+wwwpwwpwwpwwwwwwwwpwwpwwpwww
+wppppppwwppppwwppppwwppppppw
+wpwwwwwwwwwwpwwpwwwwwwwwwwpw
+wpwwwwwwwwwwpwwpwwwwwwwwwwpw
+wppppppppppppppppppppppppppw
+wwwwwwwwwwwwwwwwwwwwwwwwwwww

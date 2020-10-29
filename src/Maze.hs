@@ -5,6 +5,41 @@ import Model
 import qualified Data.Map as M
 import qualified Data.Set as S
 
+defaultMaze :: String
+defaultMaze = unlines [
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwww",
+        "wppppppppppppwwppppppppppppw",
+        "wpwwwwpwwwwwpwwpwwwwwpwwwwpw",
+        "wpwwwwpwwwwwpwwpwwwwwpwwwwpw",
+        "wfwwwwpwwwwwpwwpwwwwwpwwwwfw",
+        "wppppppppppppppppppppppppppw",
+        "wpwwwwpwwpwwwwwwwwpwwpwwwwpw",
+        "wpwwwwpwwpwwwwwwwwpwwpwwwwpw",
+        "wppppppwwppppwwppppwwppppppw",
+        "wwwwwwpwwwww ww wwwwwpwwwwww",
+        "wwwwwwpwwwww ww wwwwwpwwwwww",
+        "wwwwwwpww          wwpwwwwww",
+        "wwwwwwpww wwwwGwww wwpwwwwww",
+        "wwwwwwpww wwwwwwww wwpwwwwww",
+        "      p   wwwwwwww   p      ",
+        "wwwwwwpww wwwwwwww wwpwwwwww",
+        "wwwwwwpww wwwwwwww wwpwwwwww",
+        "wwwwwwpww          wwpwwwwww",
+        "wwwwwwpww wwwwwwww wwpwwwwww",
+        "wwwwwwpww wwwwwwww wwpwwwwww",
+        "wppppppppppppwwppppppppppppw",
+        "wpwwwwpwwwwwpwwpwwwwwpwwwwpw",
+        "wpwwwwpwwwwwpwwpwwwwwpwwwwpw",
+        "wfppwwppppppp Ppppppppwwppfw",
+        "wwwpwwpwwpwwwwwwwwpwwpwwpwww",
+        "wwwpwwpwwpwwwwwwwwpwwpwwpwww",
+        "wppppppwwppppwwppppwwppppppw",
+        "wpwwwwwwwwwwpwwpwwwwwwwwwwpw",
+        "wpwwwwwwwwwwpwwpwwwwwwwwwwpw",
+        "wppppppppppppppppppppppppppw",
+        "wwwwwwwwwwwwwwwwwwwwwwwwwwww"
+        ]
+
 -- todo: match on constant for maze width
 readLine :: Int -> String -> [(Point, Field)]
 readLine y = readLine' 0
@@ -72,16 +107,17 @@ reachable start m = S.toList $ fst $ traverse (S.empty, S.singleton start)
                       -- only search through values we have not found yet
                       in traverse (nxt, S.fromList [moveFrom p d | p <- S.toList searching, d <- validMoves p m, not $ S.member (moveFrom p d) nxt])
 
-validMaze :: Maze -> Bool
-validMaze m = mazeSize            m 
-              && onePacmanStart   m
-              && oneGhostHouse    m
-              && traversable      m
-              && (not . deadEnds) m
-
-        where validPoints      = [(Point x y) | x <- [0..mazeWidth - 1], y <- [0..mazeHeight - 1]]
-              mazeSize       m = M.size m == mazeWidth * mazeHeight && all (flip M.member m) validPoints  -- all points must be set
-              onePacmanStart m = count PacmanStart m == 1
-              oneGhostHouse  m = count GhostHouse  m == 1
-              traversable    m = S.fromList (getRest Wall m) == S.insert (find GhostHouse m) (S.fromList (reachable (find PacmanStart m) m))
-              deadEnds       m = any (\p -> length (validMoves p m) < 2 && getField p m /= GhostHouse) $ getRest Wall m
+-- return Nothing if maze is valid, otherwise, return a reason why it is not
+validMaze :: Maze -> Maybe String
+validMaze m | not mazeSize         = Just "Maze is not of the right size, expected "
+              where mazeSize       = M.size m == mazeWidth * mazeHeight && all (flip M.member m) validPoints  -- all points must be set
+                    validPoints    = [(Point x y) | x <- [0..mazeWidth - 1], y <- [0..mazeHeight - 1]]
+validMaze m | not onePacmanStart   = Just ("Expected one pacman starting position, got " ++ (show $ count PacmanStart m))
+              where onePacmanStart = count PacmanStart m == 1
+validMaze m | not oneGhostHouse    = Just ("Expected one ghost house, got " ++ (show $ count GhostHouse m))
+              where oneGhostHouse  = count GhostHouse  m == 1
+validMaze m | not traversable      = Just "Not every field in the maze is reachable"
+              where traversable    = S.fromList (getRest Wall m) == S.insert (find GhostHouse m) (S.fromList (reachable (find PacmanStart m) m))
+validMaze m | deadEnds             = Just "Maze has dead ends"
+              where deadEnds       = any (\p -> length (validMoves p m) < 2 && getField p m /= GhostHouse) $ getRest Wall m
+validMaze _                        = Nothing

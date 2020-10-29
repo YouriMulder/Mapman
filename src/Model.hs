@@ -1,9 +1,15 @@
+{-# LANGUAGE DeriveGeneric  #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 module Model where
 
 import qualified Data.Map as M
 import qualified Data.Set as S
 import Graphics.Gloss.Data.Picture
 import Graphics.Gloss.Interface.IO.Game 
+import Data.Aeson
+import Data.Aeson.Types
+import GHC.Generics
 
 windowWidth  :: Int
 windowWidth  = 400
@@ -15,11 +21,12 @@ windowHeight = 400
 
 -- default point datatype
 data Point = Point Int Int
-    deriving (Ord, Eq, Show)
+    deriving (Generic, ToJSON, FromJSON,
+    ToJSONKey, FromJSONKey, Ord, Eq, Show)
 
 -- order is needed for determining ghost move decision
 data Direction = North | West | South | East
-    deriving (Eq, Ord, Show, Enum)
+    deriving (Generic, ToJSON, FromJSON, Eq, Ord, Show, Enum)
 
 directions :: [Direction]
 directions = [North, West, South, East]
@@ -67,7 +74,7 @@ data Field = Empty
            | Fruit
            | PacmanStart
            | GhostHouse
-        deriving (Eq, Show, Enum)
+        deriving (Generic, ToJSON, FromJSON, Eq, Show, Enum)
 
 type Maze  = M.Map Model.Point Field
 
@@ -76,17 +83,18 @@ data GhostState   = Scatter Int                     -- Ghost's state.
                   | Scary   Int                     -- Ghosts are scattering for a certain number of seconds, then chasing for a certain number of seconds
                   | Scared  Int
                   | Dead
-                deriving (Show)
+                deriving (Generic, ToJSON, FromJSON, Show)
 data GhostName    = Pinky | Inky | Blinky | Clyde
-                deriving (Enum)
+                deriving (Generic, ToJSON, FromJSON, Show, Enum)
 data GhostControl = Computer 
                   | Player Direction  -- holds direction pressed by the player
-                deriving (Show)
+                deriving (Generic, ToJSON, FromJSON, Show)
 
 data PacMan = PacMan {
     ppos   :: Model.Point,
     pdir   :: Direction
 }
+    deriving (Show)
 
 data Ghost  = Ghost {
     gpos     :: Model.Point,
@@ -95,6 +103,7 @@ data Ghost  = Ghost {
     gcontrol :: GhostControl,
     gstate   :: GhostState
 }
+    deriving (Show)
 
 -- default type class for sprites (PacMan and Ghost will inherit these)
 class GridLocated a where 
@@ -118,7 +127,7 @@ ghostKillScore :: Int
 ghostKillScore = 100
 
 data Pause = IsPaused | NotPaused
-    deriving (Eq, Show)
+    deriving (Generic, ToJSON, FromJSON, Eq, Show)
 
 data GameState = GameState {
     maze      :: Maze,
