@@ -7,6 +7,7 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 import Graphics.Gloss.Data.Picture
 import Graphics.Gloss.Interface.IO.Game 
+
 import Data.Aeson
 import Data.Aeson.Types
 import GHC.Generics
@@ -143,7 +144,13 @@ dotScore = 10
 palletScore :: Int
 palletScore = 50
 
-data Pause = IsPaused | NotPaused
+fps :: Int
+fps = 10
+
+data RunState = Normal
+              | Paused
+              | Death Int  -- countdown
+              | GameOver Int
     deriving (Generic, ToJSON, FromJSON, Eq, Show)
 
 data GameState = GameOverGameState | GameState {
@@ -156,7 +163,7 @@ data GameState = GameOverGameState | GameState {
     score     :: Int,
     highScore :: Int,
     lives     :: Int,
-    paused    :: Pause,
+    runState  :: RunState,
     keysPressed :: S.Set Key,
     initialMaze :: Maze
 }

@@ -27,7 +27,7 @@ gameOver gs@GameState{score=s} =
             score=          0,
             highScore=      max hs s, 
             lives=          maxLives,
-            paused=         IsPaused,
+            runState=       GameOver 20,
             keysPressed=    S.empty
         }
 

@@ -12,9 +12,11 @@ import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
 step :: Float -> GameState -> IO GameState
-step _    gstate@GameState{paused=IsPaused} = 
-    return $ handleKeysPressed gstate
-
+step _    gstate@GameState{runState=Paused}     = return $ handleKeysPressed gstate
+step _    gstate@GameState{runState=Death 0}    = return $ gstate{runState=Normal}
+step _    gstate@GameState{runState=Death n}    = return $ gstate{runState=Death $ n - 1}
+step _    gstate@GameState{runState=GameOver 0} = return $ gstate{runState=Normal}
+step _    gstate@GameState{runState=GameOver n} = return $ gstate{runState=GameOver $ n - 1}
 step secs gstate = do
     gen <- newStdGen
 
@@ -82,5 +84,6 @@ updateKeysInput e@(EventKey k Up _ _) gstate
     = gstate { keysPressed = S.delete k (keysPressed gstate) }
 
 togglePause :: GameState -> GameState
-togglePause gstate@GameState{paused=IsPaused} = gstate {paused=NotPaused}
-togglePause gstate                            = gstate {paused=IsPaused}
+togglePause gstate@GameState{runState=Paused} = gstate {runState=Normal}
+togglePause gstate@GameState{runState=Normal} = gstate {runState=Paused}
+togglePause gstate                            = gstate
