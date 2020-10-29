@@ -1,31 +1,31 @@
 wwwwwwwwwwwwwwwwwwwwwwwwwwww
-wppppppppppppwwppppppppppppw
-wpwwwwpwwwwwpwwpwwwwwpwwwwpw
-wpwwwwpwwwwwpwwpwwwwwpwwwwpw
-wfwwwwpwwwwwpwwpwwwwwpwwwwfw
-wppppppppppppppppppppppppppw
-wpwwwwpwwpwwwwwwwwpwwpwwwwpw
-wpwwwwpwwpwwwwwwwwpwwpwwwwpw
-wppppppwwppppwwppppwwppppppw
-wwwwwwpwwwww ww wwwwwpwwwwww
-wwwwwwpwwwww ww wwwwwpwwwwww
-wwwwwwpww          wwpwwwwww
-wwwwwwpww wwwwGwww wwpwwwwww
-wwwwwwpww wwwwwwww wwpwwwwww
-      p   wwwwwwww   p      
-wwwwwwpww wwwwwwww wwpwwwwww
-wwwwwwpww wwwwwwww wwpwwwwww
-wwwwwwpww          wwpwwwwww
-wwwwwwpww wwwwwwww wwpwwwwww
-wwwwwwpww wwwwwwww wwpwwwwww
-wppppppppppppwwppppppppppppw
-wpwwwwpwwwwwpwwpwwwwwpwwwwpw
-wpwwwwpwwwwwpwwpwwwwwpwwwwpw
-wfppwwppppppp Ppppppppwwppfw
-wwwpwwpwwpwwwwwwwwpwwpwwpwww
-wwwpwwpwwpwwwwwwwwpwwpwwpwww
-wppppppwwppppwwppppwwppppppw
-wpwwwwwwwwwwpwwpwwwwwwwwwwpw
-wpwwwwwwwwwwpwwpwwwwwwwwwwpw
-wppppppppppppppppppppppppppw
+wddddddddddddwwddddddddddddw
+wdwwwwdwwwwwdwwdwwwwwdwwwwdw
+wdwwwwdwwwwwdwwdwwwwwdwwwwdw
+wpwwwwdwwwwwdwwdwwwwwdwwwwpw
+wddddddddddddddddddddddddddw
+wdwwwwdwwdwwwwwwwwdwwdwwwwdw
+wdwwwwdwwdwwwwwwwwdwwdwwwwdw
+wddddddwwddddwwddddwwddddddw
+wwwwwwdwwwww ww wwwwwdwwwwww
+wwwwwwdwwwww ww wwwwwdwwwwww
+wwwwwwdww          wwdwwwwww
+wwwwwwdww wwwwGwww wwdwwwwww
+wwwwwwdww wwwwwwww wwdwwwwww
+      d   wwwwwwww   d      
+wwwwwwdww wwwwwwww wwdwwwwww
+wwwwwwdww wwwwwwww wwdwwwwww
+wwwwwwdww          wwdwwwwww
+wwwwwwdww wwwwwwww wwdwwwwww
+wwwwwwdww wwwwwwww wwdwwwwww
+wddddddddddddwwddddddddddddw
+wdwwwwdwwwwwdwwdwwwwwdwwwwdw
+wdwwwwdwwwwwdwwdwwwwwdwwwwdw
+wpddwwdddddddPddddddddwwddpw
+wwwdwwdwwdwwwwwwwwdwwdwwdwww
+wwwdwwdwwdwwwwwwwwdwwdwwdwww
+wddddddwwddddwwddddwwddddddw
+wdwwwwwwwwwwdwwdwwwwwwwwwwdw
+wdwwwwwwwwwwdwwdwwwwwwwwwwdw
+wddddddddddddddddddddddddddw
 wwwwwwwwwwwwwwwwwwwwwwwwwwww

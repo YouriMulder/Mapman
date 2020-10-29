@@ -21,7 +21,6 @@ main = do
     let inky   = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Inky   Computer (Scatter 100)
     let blinky = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Blinky Computer (Scatter 100)
     let clyde  = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Clyde  (Player West) (Scatter 100)
-
     putStr "Starting debug checks\n"
     putStr "Is maze valid: "
     print $ validMaze maze
@@ -41,7 +40,7 @@ main = do
         paused=         NotPaused,
         keysPressed=    S.empty 
     }
-    playIO (InWindow "MapMan" (windowWidth, windowHeight) (0, 0)) -- Or FullScreen
+    playIO (InWindow "MapMan" (round windowWidth, round windowHeight) (0, 0)) -- Or FullScreen
               black            -- Background color
               10               -- Frames per second
               gameState        -- Initial state

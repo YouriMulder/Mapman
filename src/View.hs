@@ -13,8 +13,12 @@ view :: GameState -> IO Picture
 view = return . viewPure
 
 viewPure :: GameState -> Picture
-viewPure gState = Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vPaused]
+viewPure gState = renderedMaze
     where
+        
+        renderedMaze = 
+            Translate 0 ((windowBotPadding/2)-(windowTopPadding/2)) $
+            Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vPaused, vScore]
         vMaze   = renderMaze        $ maze   gState
         vPacMan = renderGridLocated $ pacman gState
         vBlinky = renderGridLocated $ blinky gState
@@ -22,6 +26,14 @@ viewPure gState = Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vPau
         vInky   = renderGridLocated $ inky   gState
         vClyde  = renderGridLocated $ clyde  gState
         vPaused = renderPaused      $ paused gState
+        vScore  = renderScore       $ score  gState
+
+renderScore :: Int -> Picture
+renderScore score = 
+    Color white $
+    Translate (-windowWidth/2) ((windowHeight/2) - (windowTopPadding*0.8)) $
+    Scale 0.10 0.10 $ 
+    Text ("Score  " ++ show score)
 
 renderPaused :: Pause -> Picture
 renderPaused IsPaused = 
@@ -58,8 +70,8 @@ translateTopLeft :: (Float, Float) -> Picture -> Picture
 translateTopLeft (pixelX, pixelY) =
     translate newPixelX newPixelY
     where 
-        newPixelX = pixelX - (fromIntegral windowWidth  / 2)
-        newPixelY = (fromIntegral windowHeight / 2) - pixelY
+        newPixelX = pixelX - (mazeWidth  / 2)
+        newPixelY = (mazeHeight / 2) - pixelY
 
 translateCellOrigin :: (Float, Float) -> Picture -> Picture
 translateCellOrigin (width, height) = translate width (-1 * height)

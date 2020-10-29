@@ -5,11 +5,23 @@ import qualified Data.Set as S
 import Graphics.Gloss.Data.Picture
 import Graphics.Gloss.Interface.IO.Game 
 
-windowWidth  :: Int
-windowWidth  = 400
+windowWidth  :: Float
+windowWidth  = mazeWidth
 
-windowHeight :: Int
-windowHeight = 400
+windowHeight :: Float
+windowHeight = windowTopPadding + mazeHeight + windowBotPadding
+
+windowTopPadding :: Float
+windowTopPadding = 20
+
+windowBotPadding :: Float
+windowBotPadding = 20
+
+mazeWidth :: Float
+mazeWidth = 400
+
+mazeHeight :: Float 
+mazeHeight = 400
 
 {- BASE DATA -}
 
@@ -31,17 +43,17 @@ opposite West = East
 opposite East = West
 
 {- MAZE DATA -}
-mazeWidth :: Int
-mazeWidth = 28
+mazeAmountOfCellsWidth :: Int
+mazeAmountOfCellsWidth = 28
 
-mazeHeight :: Int
-mazeHeight = 31
+mazeAmountOfCellsHeight :: Int
+mazeAmountOfCellsHeight = 31
 
 cellWidth :: Float
-cellWidth = fromIntegral windowWidth / fromIntegral mazeWidth
+cellWidth = mazeWidth / fromIntegral mazeAmountOfCellsWidth
 
 cellHeight :: Float
-cellHeight = fromIntegral windowHeight / fromIntegral mazeHeight
+cellHeight = mazeHeight / fromIntegral mazeAmountOfCellsHeight
 
 cellDiameter :: Float
 cellDiameter = minimum [cellWidth, cellHeight]
@@ -55,16 +67,16 @@ dist :: Model.Point -> Model.Point -> Int
 dist (Point x y) (Point u v) = (x - u) ^ 2 + (y - v)^2
 
 moveFrom :: Model.Point -> Direction -> Model.Point
-moveFrom (Point x y) North = Point x $ (y - 1) `mod` mazeHeight
-moveFrom (Point x y) South = Point x $ (y + 1) `mod` mazeHeight
-moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeWidth) y
-moveFrom (Point x y) West  = Point ((x - 1) `mod` mazeWidth) y
+moveFrom (Point x y) North = Point x $ (y - 1) `mod` mazeAmountOfCellsHeight
+moveFrom (Point x y) South = Point x $ (y + 1) `mod` mazeAmountOfCellsHeight
+moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeAmountOfCellsWidth) y
+moveFrom (Point x y) West  = Point ((x - 1) `mod` mazeAmountOfCellsWidth) y
 
 -- info on what is on the ground in a certain location
 data Field = Empty
            | Wall
-           | Palette
-           | Fruit
+           | Dot
+           | Pellet
            | PacmanStart
            | GhostHouse
         deriving (Eq, Show, Enum)
@@ -116,6 +128,12 @@ maxLives = 3
 
 ghostKillScore :: Int
 ghostKillScore = 100
+
+dotScore :: Int
+dotScore = 10
+
+palletScore :: Int
+palletScore = 50
 
 data Pause = IsPaused | NotPaused
     deriving (Eq, Show)

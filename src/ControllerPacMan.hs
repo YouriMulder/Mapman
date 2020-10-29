@@ -4,6 +4,8 @@ import Model
 import State
 import Maze
 
+import Debug.Trace
+
 instance GridLocated PacMan where
     move = undefined
     getLocation (PacMan p _)   = p
@@ -68,3 +70,11 @@ interactState gs@GameState{
             (_    , PacmanKilled)  -> Nothing
             (ghost, GhostKilled)   -> Just (setGhost ghost gs){score=s + ghostKillScore}
             (ghost, NoInteraction) -> Just (setGhost ghost gs)
+            
+interactMaze :: GameState -> GameState
+interactMaze gstate@GameState{pacman=pm, score=s, maze=m} = 
+    case Maze.getField pmPosition m of
+        Dot     -> gstate{score=s + dotScore, maze=deleteField pmPosition m}
+        Pellet  -> gstate{score=s + palletScore, maze=deleteField pmPosition m}
+        _       -> gstate
+    where pmPosition = getLocation pm
