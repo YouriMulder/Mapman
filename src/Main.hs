@@ -17,7 +17,6 @@ main = do
 
     let maze   = stringToMaze contents
     let pacMan = PacMan (find PacmanStart maze) West
-    -- todo: initial direction has to be valid (towards a wall, or they might glitch out)
     let pinky  = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Pinky  Computer (Scatter 100)
     let inky   = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Inky   Computer (Scatter 100)
     let blinky = Ghost  (find GhostHouse  maze) (ghostInitialLook maze) Blinky Computer (Scatter 100)

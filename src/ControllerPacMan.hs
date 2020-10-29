@@ -32,32 +32,39 @@ pacManDeath :: GameState -> GameState
 pacManDeath gs@GameState{lives=0} = gameOver gs
 pacManDeath gs@GameState{lives=l} = (resetState gs){lives=l - 1}
 
-interact :: PacMan -> Ghost -> Maybe Ghost
--- return Nothing if we died, return a new pacman and ghost pair if we didn't
-interact PacMan{ppos=pp} g@Ghost{gpos=gp} | pp /= gp = Just g               -- no interaction
-interact _ g@Ghost{gstate=(Scared _)}                = Just g{gstate=Dead}  -- kill the ghost
-interact _ g@Ghost{gstate=Dead}                      = Just g               -- no interaction
-interact _  _                                        = Nothing              -- kill pacman
+data Interaction = NoInteraction
+                 | GhostKilled
+                 | PacmanKilled
 
-interactState :: GameState -> GameState
+interact :: PacMan -> Ghost -> (Ghost, Interaction)
+-- return Nothing if we died, return a new ghost if we didn't
+-- if our position is not the same, and we were also not in the spot the ghost came from:
+interact PacMan{ppos=pp} g@Ghost{gpos=gp, gdir=gd} 
+       | pp /= gp && pp /= moveFrom gp (opposite gd) = (g, NoInteraction)
+interact _ g@Ghost{gstate=(Scared _)}                = (g{gstate=Dead}, GhostKilled)
+interact _ g@Ghost{gstate=Dead}                      = (g, NoInteraction)
+interact _ g                                         = (g, PacmanKilled)
+
+interactState :: GameState -> Maybe GameState
 interactState gs@GameState{
     blinky=gb,
     pinky=gp,
     inky=gi,
     clyde=gc
-} = interactAll gs
+} = do
+        interactBlinky <- (interactSingle gb (\g _gs -> _gs{blinky=g})) gs
+        interactPinky  <- (interactSingle gp (\g _gs -> _gs{pinky=g}))  interactBlinky
+        interactInky   <- (interactSingle gi (\g _gs -> _gs{inky=g}))   interactPinky
+        interactClyde  <- (interactSingle gc (\g _gs -> _gs{clyde=g}))  interactInky
+
+        return interactClyde
     where 
 
-        interactSingle :: Ghost -> (Ghost -> GameState -> GameState) -> GameState -> GameState
+        interactSingle :: Ghost -> (Ghost -> GameState -> GameState) -> GameState -> Maybe GameState
         -- update single ghost interaction based on ghost setter function
         -- once the state has been reset, the other ghosts can't kill pacman anymore
         -- this is because the state will be reset, and pacman does not overlap with any of the ghosts
         interactSingle g setGhost gs@GameState {pacman=pm, score=s} = case ControllerPacMan.interact pm g of
-            Nothing -> pacManDeath gs
-            Just g  -> (setGhost g gs){score=s + ghostKillScore}
-
-        interactAll = 
-              interactSingle gb (\g _gs -> _gs{blinky=g})
-            . interactSingle gp (\g _gs -> _gs{pinky=g})
-            . interactSingle gi (\g _gs -> _gs{inky=g})
-            . interactSingle gc (\g _gs -> _gs{clyde=g})
+            (_    , PacmanKilled)  -> Nothing
+            (ghost, GhostKilled)   -> Just (setGhost ghost gs){score=s + ghostKillScore}
+            (ghost, NoInteraction) -> Just (setGhost ghost gs)
