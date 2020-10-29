@@ -15,6 +15,7 @@ import System.Directory (
 import qualified Data.ByteString.Lazy as BS
 
 import Data.Aeson
+import Data.Aeson.Encode.Pretty
 import qualified Data.Set as S
 import Graphics.Gloss.Interface.IO.Game
 
@@ -58,7 +59,7 @@ instance FromJSON Ghost where
 
 instance ToJSON GameState where
     toJSON gs = object [
-            "maze"      .= toJSON (maze gs),
+            "maze"      .= (lines $ mazeToString (maze gs)),
             "pacman"    .= toJSON (pacman gs),
             "blinky"    .= toJSON (blinky gs),
             "pinky"     .= toJSON (pinky gs),
@@ -73,18 +74,18 @@ instance ToJSON GameState where
 
 instance FromJSON GameState where
     parseJSON = withObject "GameState" $ \obj -> do 
-        maze      <- obj .: "maze"
-        pacman    <- obj .: "pacman"   
-        blinky    <- obj .: "blinky"   
-        pinky     <- obj .: "pinky"    
-        inky      <- obj .: "inky"     
-        clyde     <- obj .: "clyde"    
-        score     <- obj .: "score"    
-        highScore <- obj .: "highScore"
-        lives     <- obj .: "lives"    
-        paused    <- obj .: "paused"   
+        mazeString <- obj .: "maze"
+        pacman     <- obj .: "pacman"   
+        blinky     <- obj .: "blinky"   
+        pinky      <- obj .: "pinky"    
+        inky       <- obj .: "inky"     
+        clyde      <- obj .: "clyde"    
+        score      <- obj .: "score"    
+        highScore  <- obj .: "highScore"
+        lives      <- obj .: "lives"    
+        paused     <- obj .: "paused"   
         return GameState{
-            maze        = maze,
+            maze        = stringToMaze $ unlines mazeString,
             pacman      = pacman,
             blinky      = blinky,
             pinky       = pinky,
@@ -131,7 +132,8 @@ slotName slot = directory ++ "/mapman" ++ show slot ++ ".json"
 dumpState :: GameState -> Int -> IO()
 -- dump gamestate to a savestate "slot" (mapman<slot>.json)
 dumpState gs slot = do
-    BS.writeFile (slotName slot) (encode gs)
+    putStrLn $ "Dumping to save state slot " ++ show slot
+    BS.writeFile (slotName slot) (encodePretty gs)
 
 loadState :: Int -> IO (Maybe GameState)
 -- load gamestate from a savestate "slot"
@@ -143,6 +145,7 @@ loadState slot = do
         putStrLn $ "Save state slot " ++ show slot ++ " does not exist"
         return Nothing
     else do
+        putStrLn $ "Loaded save state from slot " ++ show slot
         content <- BS.readFile (slotName slot)
         return $ decode content
 

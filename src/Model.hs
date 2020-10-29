@@ -33,8 +33,7 @@ mazeHeight = 400
 
 -- default point datatype
 data Point = Point Int Int
-    deriving (Generic, ToJSON, FromJSON,
-    ToJSONKey, FromJSONKey, Ord, Eq, Show)
+    deriving (Generic, ToJSON, FromJSON, Ord, Eq, Show)
 
 -- order is needed for determining ghost move decision
 data Direction = North | West | South | East
