@@ -61,17 +61,17 @@ instance FromJSON Ghost where
 
 instance ToJSON GameState where
     toJSON gs = object [
-            "maze"      .= (lines $ mazeToString (maze gs)),
-            "pacman"    .= toJSON (pacman gs),
-            "blinky"    .= toJSON (blinky gs),
-            "pinky"     .= toJSON (pinky gs),
-            "inky"      .= toJSON (inky gs),
-            "clyde"     .= toJSON (clyde gs),
-            "score"     .= score gs,
-            "highScore" .= highScore gs,
-            "runState"  .= toJSON (runState gs),
-            "lives"     .= lives gs,
-            "initialMaze"      .= (lines $ mazeToString (initialMaze gs))
+            "maze"       .= lines (mazeToString (maze gs)),
+            "pacman"     .= toJSON (pacman gs),
+            "blinky"     .= toJSON (blinky gs),
+            "pinky"      .= toJSON (pinky gs),
+            "inky"       .= toJSON (inky gs),
+            "clyde"      .= toJSON (clyde gs),
+            "score"      .= score gs,
+            "highScore"  .= highScore gs,
+            "runState"   .= toJSON (runState gs),
+            "lives"      .= lives gs,
+            "initialMaze".= lines (mazeToString (initialMaze gs))
             -- we don't dump the keysPressed field
         ]
 
@@ -110,7 +110,7 @@ initializeSerial :: IO()
 initializeSerial = do
     workingDirectory <- getCurrentDirectory
 
-    putStrLn $ "Working directory: " ++ (show workingDirectory)
+    putStrLn $ "Working directory: " ++ show workingDirectory
 
     directoryExists <- doesDirectoryExist directory
     if not directoryExists then

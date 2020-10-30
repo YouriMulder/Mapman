@@ -16,7 +16,7 @@ instance GridLocated PacMan where
     setLocation (PacMan _ pDirection) position = PacMan position pDirection
 
 updatePacMan :: GameState -> GameState
-updatePacMan gstate = gstate{pacman = (movePacMan (pacman gstate) gstate)}
+updatePacMan gstate = gstate{pacman = movePacMan (pacman gstate) gstate}
 
 movePacMan :: PacMan -> GameState -> PacMan
 movePacMan pacMan@(PacMan pPosition pDirection) GameState{maze=m} = 
@@ -58,12 +58,10 @@ interactState gs@GameState{
     inky=gi,
     clyde=gc
 } = do
-        interactBlinky <- (interactSingle gb (\g _gs -> _gs{blinky=g})) gs
-        interactPinky  <- (interactSingle gp (\g _gs -> _gs{pinky=g}))  interactBlinky
-        interactInky   <- (interactSingle gi (\g _gs -> _gs{inky=g}))   interactPinky
-        interactClyde  <- (interactSingle gc (\g _gs -> _gs{clyde=g}))  interactInky
-
-        return interactClyde
+        interactBlinky <- interactSingle gb (\g _gs -> _gs{blinky=g}) gs
+        interactPinky  <- interactSingle gp (\g _gs -> _gs{pinky=g})  interactBlinky
+        interactInky   <- interactSingle gi (\g _gs -> _gs{inky=g})   interactPinky
+        interactSingle                   gc (\g _gs -> _gs{clyde=g})  interactInky
     where 
 
         interactSingle :: Ghost -> (Ghost -> GameState -> GameState) -> GameState -> Maybe GameState
