@@ -1,4 +1,6 @@
 module State(
+    updateScore,
+    victoryCheck,
     resetState,
     gameOver
 ) where
@@ -11,7 +13,13 @@ import ModelPacMan
 import ModelMaze
 import Maze
 
+updateScore :: GameState -> GameState
+updateScore gs@GameState{score=s, highScore=hs} | s > hs = gs{highScore=s}
+updateScore gs                                           = gs
 
+victoryCheck :: GameState -> GameState
+victoryCheck gs@GameState{maze=m} | count Dot m == 0 && count Pellet m == 0 = gs{runState=Victory $ 3 * fps}
+victoryCheck gs                                                             = gs
 
 resetState :: GameState -> GameState
 resetState gs@GameState{maze=m} = (mapGhosts gs resetGhost){pacman=resetPacMan}

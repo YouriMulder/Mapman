@@ -1,6 +1,5 @@
 module Maze where
 
-import Model
 import ModelBase
 import ModelMaze
 
