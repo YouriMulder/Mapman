@@ -7,6 +7,10 @@ module State(
 
 import qualified Data.Set as S
 import Model
+import ModelBase
+import ModelGhost
+import ModelPacMan 
+import ModelMaze
 import Maze
 
 updateScore :: GameState -> GameState

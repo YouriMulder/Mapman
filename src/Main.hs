@@ -3,13 +3,18 @@
 module Main where
 
 import Model
+import ModelBase
+import ModelPacMan
+import ModelGhost
+import ModelMaze
+import ModelWindow
+
 import Maze
-import Ghosts
 import Controller
+import ControllerGhost
 import View
 import Serial
 
-import Data.Aeson
 import qualified Data.Set as S
 import Graphics.Gloss.Interface.IO.Game
 

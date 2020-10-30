@@ -1,6 +1,12 @@
 module View where
 
 import Model
+import ModelMaze
+import ModelBase
+import ModelWindow
+import ModelGhost
+import ControllerPacMan
+import ControllerGhost
 import ViewPacMan
 import ViewGhost
 import ViewMaze
@@ -18,7 +24,7 @@ viewPure gState = renderedMaze
         
         renderedMaze = 
             Translate 0 ((windowBotPadding/2)-(windowTopPadding/2)) $
-            Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vRState, vScore, vHighScore, vLives]
+            Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vRState, vScore, vHighScore, vLives, vPlayer2]
         vMaze   = renderMaze        $ maze   gState
         vPacMan = renderGridLocated $ pacman gState
         vBlinky = renderGridLocated $ blinky gState
@@ -29,27 +35,37 @@ viewPure gState = renderedMaze
         vScore  = renderScore       $ score  gState
         vHighScore = renderHighScore $ highScore gState 
         vLives  = renderLives       $ lives gState
+        vPlayer2 = renderPlayer2    $ gState
+
+renderPlayer2 :: GameState -> Picture
+renderPlayer2 gstate = case playerControlledGhosts gstate of
+    []     -> Blank
+    (x:_)  -> Color white $
+                Translate (0) ((-windowHeight/2) + (windowBotPadding*0.2)) $
+                Scale 0.10 0.10 $ 
+                Text ("Player 2 " ++ show (gname x))
+
 
 renderLives :: Int -> Picture
 renderLives lives = 
     Color white $
     Translate (-windowWidth/2) ((-windowHeight/2) + (windowBotPadding*0.2)) $
     Scale 0.10 0.10 $ 
-    Text ("lives  " ++ show lives)
+    Text ("lives " ++ show lives)
 
 renderHighScore :: Int -> Picture
 renderHighScore highScore = 
     Color white $
     Translate (0) ((windowHeight/2) - (windowTopPadding*0.8)) $
     Scale 0.10 0.10 $ 
-    Text ("HighScore  " ++ show highScore)
+    Text ("HighScore " ++ show highScore)
 
 renderScore :: Int -> Picture
 renderScore score = 
     Color white $
     Translate (-windowWidth/2) ((windowHeight/2) - (windowTopPadding*0.8)) $
     Scale 0.10 0.10 $ 
-    Text ("Score  " ++ show score)
+    Text ("Score " ++ show score)
 
 renderTextOverlay :: Float -> String -> Picture
 renderTextOverlay x s = 
@@ -73,17 +89,17 @@ renderMaze maze = Pictures $ renderedFields
 renderGridLocated :: (Sprite a, GridLocated a) => a -> Picture
 renderGridLocated a = translateInGrid (render a) (getLocation a)
 
-renderInGrid :: (Sprite a) => a -> Model.Point -> Picture
+renderInGrid :: (Sprite a) => a -> ModelBase.Point -> Picture
 renderInGrid sprite gridPosition = translateInGrid (render sprite) gridPosition
 
-translateInGrid :: Picture -> Model.Point -> Picture
+translateInGrid :: Picture -> ModelBase.Point -> Picture
 translateInGrid picture gridPosition = 
     translateCellOrigin cellOriginOffset (translateTopLeft pixelPosition picture)
     where 
         cellOriginOffset = (cellWidth/2, cellHeight/2)
         pixelPosition = getCellPixelTopLeft gridPosition
 
-getCellPixelTopLeft :: Model.Point -> (Float, Float)
+getCellPixelTopLeft :: ModelBase.Point -> (Float, Float)
 getCellPixelTopLeft (Point cellX cellY) = 
     (fromIntegral cellX * cellWidth, fromIntegral cellY * cellHeight) 
 

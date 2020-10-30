@@ -1,20 +1,22 @@
 module ControllerPacMan where
 
 import Model
+import ModelBase
+import ModelPacMan
+import ModelGhost
+import ModelMaze
 import State
 import Maze
-import Ghosts
+import ControllerGhost
 
-import Debug.Trace
 
 instance GridLocated PacMan where
     move = undefined
     getLocation (PacMan p _)   = p
     setLocation (PacMan _ pDirection) position = PacMan position pDirection
-    
 
 updatePacMan :: GameState -> GameState
-updatePacMan gstate = setGameStatePacMan (movePacMan (pacman gstate) gstate) gstate
+updatePacMan gstate = gstate{pacman = (movePacMan (pacman gstate) gstate)}
 
 movePacMan :: PacMan -> GameState -> PacMan
 movePacMan pacMan@(PacMan pPosition pDirection) GameState{maze=m} = 

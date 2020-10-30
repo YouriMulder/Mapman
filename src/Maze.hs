@@ -1,6 +1,7 @@
 module Maze where
 
-import Model
+import ModelBase
+import ModelMaze
 
 import qualified Data.Map as M
 import qualified Data.Set as S

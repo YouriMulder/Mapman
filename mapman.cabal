@@ -18,6 +18,6 @@ executable gloss-counter
                        random -any,
                        aeson,
                        aeson-pretty
-  hs-source-dirs:      src
-  other-modules:       Controller, Maze, Ghosts, ControllerGhosts, Model, View, ControllerPacMan, ViewPacMan, ViewMaze, ViewGhost, State, Serial
+  hs-source-dirs:      src, src/Model, src/Controller, src/View
+  other-modules:       Model, ModelBase, ModelGhost, ModelMaze, ModelPacMan, ModelWindow, Controller, ControllerPacMan, ControllerGhost, View, Maze, ViewPacMan, ViewMaze, ViewGhost, State, Serial
   default-language:    Haskell2010

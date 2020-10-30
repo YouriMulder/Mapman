@@ -1,16 +1,16 @@
 module Controller where
 
 import Model
-import Ghosts
-import State
-import Maze
+import ModelBase
+import ModelGhost
+import ModelMaze
+import ControllerGhost
 import ControllerPacMan
-import ControllerGhosts
 import Serial
+import State
 
 import qualified Data.Set as S
 import System.Random
-import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
 step :: Float -> GameState -> IO GameState
@@ -42,10 +42,10 @@ step secs gstate = do
            . updateScore $ finalState
 
     where -- only needed for scared/player controlled ghosts, others are already handled in the updateGhosts function:
-          randPoint :: StdGen -> Model.Point
+          randPoint :: StdGen -> ModelBase.Point
           randPoint seed = let (x, ySeed) = randomR (0, mazeAmountOfCellsWidth) seed in (Point x $ fst $ randomR (0, mazeAmountOfCellsHeight) ySeed) 
 
-          randomPos :: StdGen -> Ghost -> Maybe Model.Point
+          randomPos :: StdGen -> Ghost -> Maybe ModelBase.Point
           randomPos seed Ghost{gstate=(Scared _)}                 = Just $ randPoint seed
 
 handleKeysPressed :: GameState -> GameState
@@ -65,6 +65,17 @@ charKeyHandler 'w'  gstate = mapGhosts gstate (flip setDirection North)
 charKeyHandler 'a'  gstate = mapGhosts gstate (flip setDirection West)
 charKeyHandler 's'  gstate = mapGhosts gstate (flip setDirection South)
 charKeyHandler 'd'  gstate = mapGhosts gstate (flip setDirection East)
+charKeyHandler '0'  gstate = setGhostsComputerControlled gstate
+charKeyHandler '9'  gstate =
+    ((setGameStateGhostPlayer (blinky gstate)) . setGhostsComputerControlled) gstate
+charKeyHandler '8'  gstate =
+    ((setGameStateGhostPlayer (inky gstate)) . setGhostsComputerControlled) gstate
+charKeyHandler '7'  gstate =
+    ((setGameStateGhostPlayer (pinky gstate)) . setGhostsComputerControlled) gstate
+charKeyHandler '6'  gstate =
+    ((setGameStateGhostPlayer (clyde gstate)) . setGhostsComputerControlled) gstate
+
+
 charKeyHandler _    gstate = gstate
 
 specialKeyHandler :: SpecialKey -> GameState -> GameState
@@ -74,11 +85,9 @@ specialKeyHandler KeyLeft  gstate = updatePacManDirection' West  gstate
 specialKeyHandler KeyRight gstate = updatePacManDirection' East  gstate
 specialKeyHandler _        gstate = gstate 
 
+updatePacManDirection' :: Direction -> GameState -> GameState
 updatePacManDirection' d gstate = 
-    setGameStatePacMan (updatePacManDirection d (pacman gstate) (maze gstate)) gstate
-
--- step :: Float -> GameState -> IO GameState
--- step secs = return
+    gstate{pacman = updatePacManDirection d (pacman gstate) (maze gstate)}
 
 
 input :: Event -> GameState -> IO GameState
