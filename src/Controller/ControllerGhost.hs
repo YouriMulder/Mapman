@@ -1,15 +1,40 @@
-module Ghosts (
-    updateGhosts,
-    scare,
-    refreshScary,
-    refreshScatter
-) where
+module ControllerGhost where
 
 import Model 
-
+import ModelBase
+import ModelGhost
+import ModelPacMan
+import ModelMaze
 import Maze
 
 import Data.List ( minimumBy )
+
+instance Controllable Ghost where
+    setDirection g@Ghost{gcontrol=Computer}   _ = g
+    setDirection g@Ghost{gcontrol=(Player _)} d = g{gcontrol=Player d}
+
+instance GridLocated Ghost where
+    move = undefined
+    getLocation Ghost{gpos=gp} = gp
+    setLocation (Ghost _ gdir gname gcontrol gstate) position =
+        Ghost position gdir gname gcontrol gstate
+
+setGhostsComputerControlled :: GameState -> GameState
+setGhostsComputerControlled gstate = 
+    mapGhosts gstate (\g -> g{gcontrol=Computer})
+
+setGameStateGhostPlayer :: Ghost -> GameState -> GameState
+setGameStateGhostPlayer g@Ghost{gname=Pinky} gstate = 
+    gstate{pinky=(setGhostPlayer g)}
+setGameStateGhostPlayer g@Ghost{gname=Blinky} gstate = 
+    gstate{blinky=(setGhostPlayer g)}
+setGameStateGhostPlayer g@Ghost{gname=Inky} gstate = 
+    gstate{inky=(setGhostPlayer g)}
+setGameStateGhostPlayer g@Ghost{gname=Clyde} gstate = 
+    gstate{clyde=(setGhostPlayer g)}
+
+setGhostPlayer :: Ghost -> Ghost
+setGhostPlayer g = g{gcontrol=Player (gdir g)}
 
 {-
 Information on the strategies of the individual ghosts:
@@ -157,8 +182,4 @@ updateGhosts gs@GameState{pacman=pm, maze=m, blinky=gb} rand = mapGhosts gs upda
           updateGhost :: Ghost -> Ghost
           updateGhost g = ghostMove g pm (auxPos g) m
 
-instance GridLocated Ghost where
-    move = undefined
-    getLocation Ghost{gpos=gp} = gp
-    setLocation (Ghost _ gdir gname gcontrol gstate) position =
-        Ghost position gdir gname gcontrol gstate
+

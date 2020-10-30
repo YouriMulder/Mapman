@@ -1,9 +1,13 @@
 module ControllerPacMan where
 
 import Model
+import ModelBase
+import ModelPacMan
+import ModelGhost
+import ModelMaze
 import State
 import Maze
-import Ghosts
+import ControllerGhost
 
 
 instance GridLocated PacMan where
@@ -13,7 +17,7 @@ instance GridLocated PacMan where
     
 
 updatePacMan :: GameState -> GameState
-updatePacMan gstate = setGameStatePacMan (movePacMan (pacman gstate) gstate) gstate
+updatePacMan gstate = gstate{pacman = (movePacMan (pacman gstate) gstate)}
 
 movePacMan :: PacMan -> GameState -> PacMan
 movePacMan pacMan@(PacMan pPosition pDirection) GameState{maze=m} = 

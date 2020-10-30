@@ -1,16 +1,15 @@
 module Controller where
 
 import Model
-import Ghosts
+import ModelBase
+import ModelGhost
+import ModelMaze
+import ControllerGhost
 import ControllerPacMan
-import ControllerGhosts
 import Serial
-
-import Debug.Trace
 
 import qualified Data.Set as S
 import System.Random
-import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
 
 step :: Float -> GameState -> IO GameState
@@ -35,10 +34,10 @@ step secs gstate = do
                                 Just gs -> gs
 
     where -- only needed for scared/player controlled ghosts, others are already handled in the updateGhosts function:
-          randPoint :: StdGen -> Model.Point
+          randPoint :: StdGen -> ModelBase.Point
           randPoint seed = let (x, ySeed) = randomR (0, mazeAmountOfCellsWidth) seed in (Point x $ fst $ randomR (0, mazeAmountOfCellsHeight) ySeed) 
 
-          randomPos :: StdGen -> Ghost -> Maybe Model.Point
+          randomPos :: StdGen -> Ghost -> Maybe ModelBase.Point
           randomPos seed Ghost{gstate=(Scared _)}                 = Just $ randPoint seed
 
 handleKeysPressed :: GameState -> GameState
@@ -80,7 +79,7 @@ specialKeyHandler _        gstate = gstate
 
 updatePacManDirection' :: Direction -> GameState -> GameState
 updatePacManDirection' d gstate = 
-    setGameStatePacMan (updatePacManDirection d (pacman gstate) (maze gstate)) gstate
+    gstate{pacman = updatePacManDirection d (pacman gstate) (maze gstate)}
 
 
 input :: Event -> GameState -> IO GameState

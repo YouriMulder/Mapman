@@ -1,6 +1,11 @@
 module View where
 
 import Model
+import ModelMaze
+import ModelBase
+import ModelWindow
+import ModelGhost
+import ControllerGhost
 import ViewPacMan
 import ViewGhost
 import ViewMaze
@@ -82,17 +87,17 @@ renderMaze maze = Pictures $ renderedFields
 renderGridLocated :: (Sprite a, GridLocated a) => a -> Picture
 renderGridLocated a = translateInGrid (render a) (getLocation a)
 
-renderInGrid :: (Sprite a) => a -> Model.Point -> Picture
+renderInGrid :: (Sprite a) => a -> ModelBase.Point -> Picture
 renderInGrid sprite gridPosition = translateInGrid (render sprite) gridPosition
 
-translateInGrid :: Picture -> Model.Point -> Picture
+translateInGrid :: Picture -> ModelBase.Point -> Picture
 translateInGrid picture gridPosition = 
     translateCellOrigin cellOriginOffset (translateTopLeft pixelPosition picture)
     where 
         cellOriginOffset = (cellWidth/2, cellHeight/2)
         pixelPosition = getCellPixelTopLeft gridPosition
 
-getCellPixelTopLeft :: Model.Point -> (Float, Float)
+getCellPixelTopLeft :: ModelBase.Point -> (Float, Float)
 getCellPixelTopLeft (Point cellX cellY) = 
     (fromIntegral cellX * cellWidth, fromIntegral cellY * cellHeight) 
 

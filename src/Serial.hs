@@ -3,7 +3,9 @@
 
 module Serial where
 
-import Model 
+import Model
+import ModelPacMan
+import ModelGhost
 import Maze
 
 import System.Directory (

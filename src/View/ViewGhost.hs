@@ -1,7 +1,8 @@
 module ViewGhost where
 
 import Model
-import Ghosts
+import ModelMaze
+import ModelGhost
 import Graphics.Gloss
 
 instance Sprite Ghost where 

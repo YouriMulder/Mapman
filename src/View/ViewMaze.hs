@@ -1,7 +1,9 @@
 module ViewMaze where
 
-import Model
 import Graphics.Gloss
+
+import Model
+import ModelMaze
 
 
 instance Sprite Field where 

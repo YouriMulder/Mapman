@@ -1,7 +1,11 @@
 module ViewPacMan where
 
-import Model
 import Graphics.Gloss
+
+
+import Model
+import ModelPacMan
+import ModelMaze
 
 instance GridLocated PacMan where
     move = undefined
