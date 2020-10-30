@@ -25,23 +25,23 @@ viewPure gState = renderedMaze
         renderedMaze = 
             Translate 0 ((windowBotPadding/2)-(windowTopPadding/2)) $
             Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vRState, vScore, vHighScore, vLives, vPlayer2]
-        vMaze   = renderMaze        $ maze   gState
-        vPacMan = renderGridLocated $ pacman gState
-        vBlinky = renderGridLocated $ blinky gState
-        vPinky  = renderGridLocated $ pinky  gState
-        vInky   = renderGridLocated $ inky   gState
-        vClyde  = renderGridLocated $ clyde  gState
-        vRState = renderRunState    $ runState gState
-        vScore  = renderScore       $ score  gState
-        vHighScore = renderHighScore $ highScore gState 
-        vLives  = renderLives       $ lives gState
-        vPlayer2 = renderPlayer2    $ gState
+        vMaze   = renderMaze        $ maze      gState
+        vPacMan = renderGridLocated $ pacman    gState
+        vBlinky = renderGridLocated $ blinky    gState
+        vPinky  = renderGridLocated $ pinky     gState
+        vInky   = renderGridLocated $ inky      gState
+        vClyde  = renderGridLocated $ clyde     gState
+        vRState = renderRunState    $ runState  gState
+        vScore  = renderScore       $ score     gState
+        vHighScore = renderHighScore$ highScore gState 
+        vLives  = renderLives       $ lives     gState
+        vPlayer2 = renderPlayer2                gState
 
 renderPlayer2 :: GameState -> Picture
 renderPlayer2 gstate = case playerControlledGhosts gstate of
     []     -> Blank
     (x:_)  -> Color white $
-                Translate (0) ((-windowHeight/2) + (windowBotPadding*0.2)) $
+                Translate 0 ((-windowHeight/2) + (windowBotPadding*0.2)) $
                 Scale 0.10 0.10 $ 
                 Text ("Player 2 " ++ show (gname x))
 
@@ -56,7 +56,7 @@ renderLives lives =
 renderHighScore :: Int -> Picture
 renderHighScore highScore = 
     Color white $
-    Translate (0) ((windowHeight/2) - (windowTopPadding*0.8)) $
+    Translate 0 ((windowHeight/2) - (windowTopPadding*0.8)) $
     Scale 0.10 0.10 $ 
     Text ("HighScore " ++ show highScore)
 
@@ -82,7 +82,7 @@ renderRunState (Victory n)  = renderTextOverlay (-75) $ "You Won! (" ++ show ((n
 renderRunState Normal       = Blank
 
 renderMaze :: Maze -> Picture
-renderMaze maze = Pictures $ renderedFields
+renderMaze maze = Pictures renderedFields
     where
         renderedFields = map (uncurry (flip renderInGrid)) (getAllPairs maze)
 
@@ -90,7 +90,7 @@ renderGridLocated :: (Sprite a, GridLocated a) => a -> Picture
 renderGridLocated a = translateInGrid (render a) (getLocation a)
 
 renderInGrid :: (Sprite a) => a -> ModelBase.Point -> Picture
-renderInGrid sprite gridPosition = translateInGrid (render sprite) gridPosition
+renderInGrid sprite = translateInGrid (render sprite)
 
 translateInGrid :: Picture -> ModelBase.Point -> Picture
 translateInGrid picture gridPosition = 

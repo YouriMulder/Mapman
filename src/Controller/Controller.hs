@@ -67,13 +67,13 @@ charKeyHandler 's'  gstate = mapGhosts gstate (flip setDirection South)
 charKeyHandler 'd'  gstate = mapGhosts gstate (flip setDirection East)
 charKeyHandler '0'  gstate = setGhostsComputerControlled gstate
 charKeyHandler '9'  gstate =
-    ((setGameStateGhostPlayer (blinky gstate)) . setGhostsComputerControlled) gstate
+    (setGameStateGhostPlayer (blinky gstate) . setGhostsComputerControlled) gstate
 charKeyHandler '8'  gstate =
-    ((setGameStateGhostPlayer (inky gstate)) . setGhostsComputerControlled) gstate
+    (setGameStateGhostPlayer (inky gstate) . setGhostsComputerControlled) gstate
 charKeyHandler '7'  gstate =
-    ((setGameStateGhostPlayer (pinky gstate)) . setGhostsComputerControlled) gstate
+    (setGameStateGhostPlayer (pinky gstate) . setGhostsComputerControlled) gstate
 charKeyHandler '6'  gstate =
-    ((setGameStateGhostPlayer (clyde gstate)) . setGhostsComputerControlled) gstate
+    (setGameStateGhostPlayer (clyde gstate) . setGhostsComputerControlled) gstate
 
 
 charKeyHandler _    gstate = gstate

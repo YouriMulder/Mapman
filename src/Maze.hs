@@ -45,9 +45,9 @@ readLine :: Int -> String -> [(Point, Field)]
 readLine y = readLine' 0
         where   readLine' :: Int -> String -> [(Point, Field)]
                         -- if line is empty/too short, fill with walls:
-                readLine' x []                              = [((Point dx y), Wall) | dx <- [x..mazeAmountOfCellsWidth - 1]]
+                readLine' x []                              = [(Point dx y, Wall) | dx <- [x..mazeAmountOfCellsWidth - 1]]
                 readLine' x _ | x == mazeAmountOfCellsWidth = [] -- full maze width reached
-                readLine' x (c:cs)                          = ((Point x y), tile c):readLine' (x + 1) cs
+                readLine' x (c:cs)                          = (Point x y, tile c):readLine' (x + 1) cs
 
                 tile 'e' = Empty
                 tile ' ' = Empty
@@ -63,7 +63,8 @@ stringToMaze content =
 
 mazeToString :: Maze -> String
 mazeToString m = unlines [
-                map pointToChar [(Point x y) | x <- [0..mazeAmountOfCellsWidth - 1]] | y <- [0..mazeAmountOfCellsHeight - 1]
+                        [pointToChar (Point x y) | x <- [0..mazeAmountOfCellsWidth - 1]
+                ] | y <- [0..mazeAmountOfCellsHeight - 1]
         ]
         where   pointToChar = fieldToChar . flip getField m
                 fieldToChar :: Field -> Char
@@ -99,11 +100,11 @@ getField :: Point -> Maze -> Field
 getField = M.findWithDefault Wall
 
 deleteField :: Point -> Maze -> Maze
-deleteField p = M.adjust (\_ -> Empty) p 
+deleteField = M.adjust (const Empty) 
 
 -- Returns True if direction is possible, otherwise False
 isValidDirection :: Direction -> Point -> Maze -> Bool
-isValidDirection direction position maze = direction `elem` (validMoves position maze)
+isValidDirection direction position maze = direction `elem` validMoves position maze
 
 validMoves :: Point -> Maze -> [Direction] 
  -- if point is not a valid point in the maze, return that it is a wall
@@ -127,10 +128,10 @@ reachable start m = S.toList $ fst $ traverse (S.empty, S.singleton start)
 validMaze :: Maze -> Maybe String
 validMaze m | not mazeSize         = Just "Maze is not of the right size, expected "
               where mazeSize       = M.size m == mazeAmountOfCellsWidth * mazeAmountOfCellsHeight && all (flip M.member m) validPoints  -- all points must be set
-                    validPoints    = [(Point x y) | x <- [0..mazeAmountOfCellsWidth - 1], y <- [0..mazeAmountOfCellsHeight - 1]]
-validMaze m | not onePacmanStart   = Just ("Expected one pacman starting position, got " ++ (show $ count PacmanStart m))
+                    validPoints    = [Point x y | x <- [0..mazeAmountOfCellsWidth - 1], y <- [0..mazeAmountOfCellsHeight - 1]]
+validMaze m | not onePacmanStart   = Just ("Expected one pacman starting position, got " ++ show (count PacmanStart m))
               where onePacmanStart = count PacmanStart m == 1
-validMaze m | not oneGhostHouse    = Just ("Expected one ghost house, got " ++ (show $ count GhostHouse m))
+validMaze m | not oneGhostHouse    = Just ("Expected one ghost house, got " ++ show (count GhostHouse m))
               where oneGhostHouse  = count GhostHouse  m == 1
 validMaze m | not traversable      = Just "Not every field in the maze is reachable"
               where traversable    = S.fromList (getRest Wall m) == S.insert (find GhostHouse m) (S.fromList (reachable (find PacmanStart m) m))
