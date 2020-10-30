@@ -5,6 +5,7 @@ import ModelMaze
 import ModelBase
 import ModelWindow
 import ModelGhost
+import ControllerPacMan
 import ControllerGhost
 import ViewPacMan
 import ViewGhost

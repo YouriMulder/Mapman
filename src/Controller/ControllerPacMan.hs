@@ -14,7 +14,6 @@ instance GridLocated PacMan where
     move = undefined
     getLocation (PacMan p _)   = p
     setLocation (PacMan _ pDirection) position = PacMan position pDirection
-    
 
 updatePacMan :: GameState -> GameState
 updatePacMan gstate = gstate{pacman = (movePacMan (pacman gstate) gstate)}
