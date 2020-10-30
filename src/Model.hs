@@ -168,6 +168,22 @@ data GameState = GameOverGameState | GameState {
     initialMaze :: Maze
 }
 
+allGhosts :: GameState -> [Ghost]
+allGhosts GameState{
+    blinky = gb,
+    pinky  = gp,
+    inky   = gi,
+    clyde  = gc
+} = [gb, gp, gi, gc]
+
+playerControlledGhosts :: GameState -> [Ghost]
+playerControlledGhosts gstate = filter (not . isComputerGhost) ghosts
+    where
+        ghosts = allGhosts gstate
+        isComputerGhost :: Ghost -> Bool
+        isComputerGhost Ghost{gcontrol=Computer} = True
+        isComputerGhost _                        = False
+
 mapGhosts :: GameState -> (Ghost -> Ghost) -> GameState
 mapGhosts gs@GameState{
     blinky = gb,

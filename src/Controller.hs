@@ -58,6 +58,7 @@ charKeyHandler 'w'  gstate = mapGhosts gstate (flip setDirection North)
 charKeyHandler 'a'  gstate = mapGhosts gstate (flip setDirection West)
 charKeyHandler 's'  gstate = mapGhosts gstate (flip setDirection South)
 charKeyHandler 'd'  gstate = mapGhosts gstate (flip setDirection East)
+charKeyHandler '0'  gstate = setGhostsComputerControlled gstate
 charKeyHandler '9'  gstate =
     ((setGameStateGhostPlayer (blinky gstate)) . setGhostsComputerControlled) gstate
 charKeyHandler '8'  gstate =
