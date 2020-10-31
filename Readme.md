@@ -11,7 +11,7 @@ Read the design document for more detailed description of how to create a maze, 
 
 ### Ghosts
 #### Switch to player controller Ghost
-- 0 = All ghosts are now player controlled
+- 0 = All ghosts are now computer controlled
 - 9 = Player controls Blinky
 - 8 = Player controls Inky
 - 7 = Player controls Pinky
