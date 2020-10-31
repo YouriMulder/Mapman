@@ -69,11 +69,11 @@ charKeyHandler '0'  gstate = setGhostsComputerControlled gstate
 charKeyHandler '9'  gstate =
     (setGameStateGhostPlayer (blinky gstate) . setGhostsComputerControlled) gstate
 charKeyHandler '8'  gstate =
-    (setGameStateGhostPlayer (inky gstate) . setGhostsComputerControlled) gstate
+    (setGameStateGhostPlayer (inky gstate)   . setGhostsComputerControlled) gstate
 charKeyHandler '7'  gstate =
-    (setGameStateGhostPlayer (pinky gstate) . setGhostsComputerControlled) gstate
+    (setGameStateGhostPlayer (pinky gstate)  . setGhostsComputerControlled) gstate
 charKeyHandler '6'  gstate =
-    (setGameStateGhostPlayer (clyde gstate) . setGhostsComputerControlled) gstate
+    (setGameStateGhostPlayer (clyde gstate)  . setGhostsComputerControlled) gstate
 
 
 charKeyHandler _    gstate = gstate
@@ -96,9 +96,9 @@ input keyEvent@EventKey{} gstate
 input _ gstate = return gstate
 
 updateKeysInput :: Event -> GameState -> GameState
-updateKeysInput e@(EventKey k Down   _ _) gstate 
+updateKeysInput (EventKey k Down   _ _) gstate 
     = gstate { keysPressed = S.insert k (keysPressed gstate) }
-updateKeysInput e@(EventKey k Up _ _) gstate 
+updateKeysInput (EventKey k Up _ _) gstate 
     = gstate { keysPressed = S.delete k (keysPressed gstate) }
 
 togglePause :: GameState -> GameState

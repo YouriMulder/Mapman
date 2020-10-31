@@ -51,7 +51,7 @@ dist :: ModelBase.Point -> ModelBase.Point -> Int
 dist (Point x y) (Point u v) = (x - u) ^ 2 + (y - v)^2
 
 moveFrom :: ModelBase.Point -> Direction -> ModelBase.Point
-moveFrom (Point x y) North = Point x $ (y - 1) `mod` mazeAmountOfCellsHeight
-moveFrom (Point x y) South = Point x $ (y + 1) `mod` mazeAmountOfCellsHeight
-moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeAmountOfCellsWidth) y
-moveFrom (Point x y) West  = Point ((x - 1) `mod` mazeAmountOfCellsWidth) y
+moveFrom (Point x y) North = Point x                                      $ (y - 1) `mod` mazeAmountOfCellsHeight
+moveFrom (Point x y) South = Point x                                      $ (y + 1) `mod` mazeAmountOfCellsHeight
+moveFrom (Point x y) East  = Point ((x + 1) `mod` mazeAmountOfCellsWidth)    y
+moveFrom (Point x y) West  = Point ((x - 1) `mod` mazeAmountOfCellsWidth)    y

@@ -24,13 +24,13 @@ setGhostsComputerControlled gstate =
     mapGhosts gstate (\g -> g{gcontrol=Computer})
 
 setGameStateGhostPlayer :: Ghost -> GameState -> GameState
-setGameStateGhostPlayer g@Ghost{gname=Pinky} gstate = 
+setGameStateGhostPlayer g@Ghost{gname=Pinky}  gstate = 
     gstate{pinky=setGhostPlayer g}
 setGameStateGhostPlayer g@Ghost{gname=Blinky} gstate = 
     gstate{blinky=setGhostPlayer g}
-setGameStateGhostPlayer g@Ghost{gname=Inky} gstate = 
+setGameStateGhostPlayer g@Ghost{gname=Inky}   gstate = 
     gstate{inky=setGhostPlayer g}
-setGameStateGhostPlayer g@Ghost{gname=Clyde} gstate = 
+setGameStateGhostPlayer g@Ghost{gname=Clyde}  gstate = 
     gstate{clyde=setGhostPlayer g}
 
 setGhostPlayer :: Ghost -> Ghost
