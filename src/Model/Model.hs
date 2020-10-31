@@ -7,14 +7,12 @@ import Graphics.Gloss.Data.Picture
 import Graphics.Gloss.Interface.IO.Game 
 import qualified Data.Set as S
 import Data.Aeson
-import Data.Aeson.Types
 import GHC.Generics
 
 import ModelBase
 import ModelGhost
 import ModelPacMan
 import ModelMaze
-import ModelWindow
 
 -- default type class for sprites (PacMan and Ghost will inherit these)
 class GridLocated a where 
@@ -37,6 +35,9 @@ dotScore = 10
 palletScore :: Int
 palletScore = 50
 
+ghostKillScore :: Int
+ghostKillScore = 100
+
 fps :: Int
 fps = 10
 
@@ -47,7 +48,7 @@ data RunState = Normal
               | Victory Int
     deriving (Generic, ToJSON, FromJSON, Eq, Show)
 
-data GameState = GameOverGameState | GameState {
+data GameState = GameState {
     maze      :: Maze,
     pacman    :: PacMan,
     blinky    :: Ghost,
@@ -71,12 +72,10 @@ allGhosts GameState{
 } = [gb, gp, gi, gc]
 
 playerControlledGhosts :: GameState -> [Ghost]
-playerControlledGhosts gstate = filter (not . isComputerGhost) ghosts
+playerControlledGhosts = filter isComputerGhost . allGhosts
     where
-        ghosts = allGhosts gstate
         isComputerGhost :: Ghost -> Bool
-        isComputerGhost Ghost{gcontrol=Computer} = True
-        isComputerGhost _                        = False
+        isComputerGhost = (Computer /=) . gcontrol
 
 mapGhosts :: GameState -> (Ghost -> Ghost) -> GameState
 mapGhosts gs@GameState{

@@ -63,9 +63,12 @@ stringToMaze content =
 
 mazeToString :: Maze -> String
 mazeToString m = unlines [
-                        [pointToChar (Point x y) | x <- [0..mazeAmountOfCellsWidth - 1]
-                ] | y <- [0..mazeAmountOfCellsHeight - 1]
-        ]
+                           [
+                             pointToChar (Point x y) 
+                             | x <- [0..mazeAmountOfCellsWidth - 1]
+                            ]
+                           | y <- [0..mazeAmountOfCellsHeight - 1]
+                        ]
         where   pointToChar = fieldToChar . flip getField m
                 fieldToChar :: Field -> Char
                 -- basically the reverse of the above
