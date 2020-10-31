@@ -31,3 +31,8 @@ On the top and bottom of the screen you can see the following inforamtion
 - Top right    = high score
 - Bottom left  = PacMan current Lives
 - Bottom right = None if no player2 is active, And the name of the ghost when a player2 is active.
+
+
+### Save games
+- F1 - F5 = Store a gamesave in slot 1 - 5.
+- 1  - 5 = Load a gamesave from slot 1 - 5.
