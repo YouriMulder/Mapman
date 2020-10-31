@@ -84,7 +84,6 @@ count :: Field -> Maze -> Int
 count f = M.size . M.filter (== f)
 
 -- get all points with/without a certain field
--- mostly used for debugging
 getAll :: Field -> Maze -> [Point]
 getAll f m = M.keys $ M.filter (== f) m
 
@@ -109,9 +108,14 @@ deleteField = M.adjust (const Empty)
 isValidDirection :: Direction -> Point -> Maze -> Bool
 isValidDirection direction position maze = direction `elem` validMoves position maze
 
+traversable :: Field -> Bool
+traversable Wall       = False
+traversable GhostHouse = False
+traversable _          = True
+
 validMoves :: Point -> Maze -> [Direction] 
  -- if point is not a valid point in the maze, return that it is a wall
-validMoves p m = [q | q <- directions, let f = getField (moveFrom p q) m in f /= Wall && f /= GhostHouse]
+validMoves p m = [q | q <- directions, traversable $ getField (moveFrom p q) m]
 
 ghostInitialLook :: Maze -> Direction
 -- ghost must initially look in a direction they can move in
@@ -125,7 +129,13 @@ reachable start m = S.toList $ fst $ traverse (S.empty, S.singleton start)
               traverse (done, searching)                  = 
                       let nxt = S.union done searching  -- updated found values
                       -- only search through values we have not found yet
-                      in traverse (nxt, S.fromList [moveFrom p d | p <- S.toList searching, d <- validMoves p m, not $ S.member (moveFrom p d) nxt])
+                      in traverse (nxt, S.fromList [
+                              moveFrom p d 
+                                | p <- S.toList searching,
+                                  d <- directions,
+                                  getField (moveFrom p d) m /= Wall,  -- we also want to find the Ghost House
+                                  not $ S.member (moveFrom p d) nxt
+                              ])
 
 -- return Nothing if maze is valid, otherwise, return a reason why it is not
 validMaze :: Maze -> Maybe String
@@ -136,8 +146,11 @@ validMaze m | not onePacmanStart   = Just ("Expected one pacman starting positio
               where onePacmanStart = count PacmanStart m == 1
 validMaze m | not oneGhostHouse    = Just ("Expected one ghost house, got " ++ show (count GhostHouse m))
               where oneGhostHouse  = count GhostHouse  m == 1
-validMaze m | not traversable      = Just "Not every field in the maze is reachable"
-              where traversable    = S.fromList (getRest Wall m) == S.insert (find GhostHouse m) (S.fromList (reachable (find PacmanStart m) m))
-validMaze m | deadEnds             = Just "Maze has dead ends"
-              where deadEnds       = any (\p -> length (validMoves p m) < 2 && getField p m /= GhostHouse) $ getRest Wall m
+validMaze m | not traversable      = Just "Not every dot/pellet/ghostHouse in the maze is reachable"
+              where dots           = S.fromList (getAll Dot m)
+                    pellets        = S.fromList (getAll Pellet m)
+                    ghostHouse     = S.fromList (getAll GhostHouse m)
+                    traversable    = S.isSubsetOf (S.unions [dots, pellets, ghostHouse]) (S.fromList (reachable (find PacmanStart m) m))
+validMaze m | deadEnds             = Just "Maze has dead ends in traversable area"
+              where deadEnds       = any (\p -> length (validMoves p m) < 2 && getField p m /= GhostHouse) $ reachable (find PacmanStart m) m
 validMaze _                        = Nothing

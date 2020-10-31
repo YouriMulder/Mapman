@@ -1,31 +1,31 @@
 wwwwwwwwwwwwwwwwwwwwwwwwwwww
-wddddddddddddwwddddddddddddw
-wdwwwwdwwwwwdwwdwwwwwdwwwwdw
-wpwwwwdwwwwwdwwdwwwwwdwwwwpw
-wdwwwwdwwwwwdwwdwwwwwdwwwwdw
+wdddddddwddddddddddwdddddddw
+wpwwwwwdwdwwwwwwwwdwdwwwwwpw
+wdwwwwwdwdwwwwwwwwdwdwwwwwdw
 wddddddddddddddddddddddddddw
-wdwwwwdwwdwwwwwwwwdwwdwwwwdw
-wdwwwwdwwdwwwwwwwwdwwdwwwwdw
-wddddddwwddddwwddddwwddddddw
-wwwwwwdwwwww ww wwwwwdwwwwww
-wwwwwwdwwwww ww wwwwwdwwwwww
-wwwwwwdww          wwdwwwwww
-wwwwwwdww wwwwGwww wwdwwwwww
-wwwwwwdww wwwwwwww wwdwwwwww
-      d   wwwwwwww   d      
-wwwwwwdww wwwwwwww wwdwwwwww
-wwwwwwdww wwwwwwww wwdwwwwww
-wwwwwwdww          wwdwwwwww
-wwwwwwdww wwwwwwww wwdwwwwww
-wwwwwwdww wwwwwwww wwdwwwwww
-wddddddddddddwwddddddddddddw
-wdwwwwdwwwwwdwwdwwwwwdwwwwdw
-wdwwwwdwwwwwdwwdwwwwwdwwwwdw
-wpddwwdddddddPddddddddwwddpw
-wwwdwwdwwdwwwwwwwwdwwdwwdwww
-wwwdwwdwwdwwwwwwwwdwwdwwdwww
-wddddddwwddddwwddddwwddddddw
-wdwwwwwwwwwwdwwdwwwwwwwwwwdw
-wdwwwwwwwwwwdwwdwwwwwwwwwwdw
+wwwdwdwwwwwwdwwdwwwwwwdwdwww
+wwwdwdwwwwwwdwwdwwwwwwdwdwww
+wwwdwdwwwwwwdwwdwwwwwwdwdwww
+   dwddddddddwwddddddddwd   
+wwwdwwwwwdwwwwwwwwdwwwwwdwww
+wwwd                    dwww
+wwwdwwwww wwwGwwww wwwwwdwww
+wwwdw     wwwwwwww     wdwww
+wwwdw www wwwwwwww www wdwww
+   d  www          www  d   
+wwwdwwwwwwww ww wwwwwwwwdwww
+wwwddddddddd ww dddddddddwww
+wwwdwwwwwwwdwwwwdwwwwwwwdwww
+wddddddddddddPdddddddddddddw
+wdwwwdwwwwwwdwwdwwwwwwdwwwdw
+wdwwwdwwwwwwdwwdwwwwwwdwwwdw
+wdwwwdwddddddwwddddddwdwwwdw
+wdwwwdwdwwwwwwwwwwwwdwdwwwdw
+wpwwwdwdwwwwwwwwwwwwdwdwwwpw
 wddddddddddddddddddddddddddw
+wwwwwwwwwwwwwwwwwwwwwwwwwwww
+ www w   w   w www w   w ww 
+  w  w w w w w  w  w w w  w 
+ w w w   w   w w w w   w w  
+ www w w w www www w w w ww 
 wwwwwwwwwwwwwwwwwwwwwwwwwwww
