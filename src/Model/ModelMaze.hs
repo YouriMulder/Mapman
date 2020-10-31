@@ -21,35 +21,45 @@ data Field = Empty
 {- MAZE DATA -}
 type Maze  = M.Map ModelBase.Point Field
 
+-- | The maze width in pixels.
 mazeWidth :: Float
 mazeWidth = 400
 
+-- | The maze height in pixels.
 mazeHeight :: Float 
 mazeHeight = 400
 
+-- | The maze width in cells.
 mazeAmountOfCellsWidth :: Int
 mazeAmountOfCellsWidth = 28
 
+-- | The maze height in cells.
 mazeAmountOfCellsHeight :: Int
 mazeAmountOfCellsHeight = 31
 
+-- | The width in pixels of a cell.
 cellWidth :: Float
 cellWidth = mazeWidth / fromIntegral mazeAmountOfCellsWidth
 
+-- | The height in pixels of a cell.
 cellHeight :: Float
 cellHeight = mazeHeight / fromIntegral mazeAmountOfCellsHeight
 
+-- | The minimum diameter in pixels of a cell.
 cellDiameter :: Float
 cellDiameter = minimum [cellWidth, cellHeight]
 
+-- | The minimum radius in pixels of a cell.
 cellRadius :: Float        
 cellRadius = cellDiameter / 2
 
 
+-- | The Euclidian distance between to points.
 dist :: ModelBase.Point -> ModelBase.Point -> Int
--- Euclidian distance
 dist (Point x y) (Point u v) = (x - u) ^ 2 + (y - v)^2
 
+-- | The next position based on the direction. 
+-- | This returns one step in a direction.
 moveFrom :: ModelBase.Point -> Direction -> ModelBase.Point
 moveFrom (Point x y) North = Point x                                      $ (y - 1) `mod` mazeAmountOfCellsHeight
 moveFrom (Point x y) South = Point x                                      $ (y + 1) `mod` mazeAmountOfCellsHeight

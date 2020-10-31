@@ -1,19 +1,29 @@
 module ControllerPacMan where
 
 import Model
-import ModelBase
-import ModelPacMan
+    ( GameState(GameState, lives, runState, blinky, pinky, inky, clyde,
+                pacman, score, maze),
+      RunState(Death),
+      Controllable(..),
+      GridLocated(getLocation, setLocation),
+      dotScore,
+      palletScore,
+      fps,
+      mapGhosts,
+      ghostKillScore )
+import ModelBase ( Direction, opposite )
+import ModelPacMan ( PacMan(..) )
 import ModelGhost
-import ModelMaze
-import State
-import Maze
-import ControllerGhost
+    ( Ghost(Ghost, gpos, gdir, gstate), GhostState(Dead, Scared) )
+import ModelMaze ( Maze, Field(Pellet, Dot), moveFrom )
+import State ( resetState, gameOver )
+import Maze ( getField, deleteField, isValidDirection )
+import ControllerGhost ( scare )
 
 instance Controllable PacMan where
     setDirection pm d = pm{pdir=d}
 
 instance GridLocated PacMan where
-    move = undefined
     getLocation (PacMan p _)   = p
     setLocation (PacMan _ pDirection) position = PacMan position pDirection
 

@@ -1,18 +1,35 @@
 module Controller where
 
 import Model
-import ModelBase
-import ModelGhost
+    ( GameState(GameState, score, blinky, inky, pinky, clyde, pacman,
+                maze, keysPressed, runState),
+      RunState(Paused, Death, GameOver, Victory, Normal),
+      Controllable(setDirection),
+      mapGhosts )
+import ModelBase ( Direction(..), Point(..) )
+import ModelGhost ( Ghost(Ghost, gstate), GhostState(Scared) )
 import ModelMaze
+    ( mazeAmountOfCellsWidth, mazeAmountOfCellsHeight )
 import ControllerGhost
 import ControllerPacMan
-import Serial
-import State
+    ( updatePacMan,
+      updatePacManDirection,
+      pacManDeath,
+      interactState,
+      interactMaze )
+import Serial ( checkDumpState, checkLoadState )
+import State ( updateScore, victoryCheck, gameOver )
 
 import qualified Data.Set as S
-import System.Random
+import System.Random ( StdGen, Random(randomR), newStdGen )
 import Graphics.Gloss.Interface.IO.Game
+    ( Key(SpecialKey, Char),
+      KeyState(Up, Down),
+      SpecialKey(KeyRight, KeyUp, KeyDown, KeyLeft),
+      Event(EventKey) )
 
+-- | Function to handle every update cycle. 
+-- | Updates every single entity in the GameState for a cycle.
 step :: Float -> GameState -> IO GameState
 step _    gstate@GameState{runState=Paused}              = return $ handleKeysPressed gstate
 step _    gstate@GameState{runState=Death 0}             = return $ gstate{runState=Normal}
@@ -48,10 +65,12 @@ step secs gstate = do
           randomPos :: StdGen -> Ghost -> Maybe ModelBase.Point
           randomPos seed Ghost{gstate=(Scared _)}                 = Just $ randPoint seed
 
+-- | Handles all the current pressed keys.
 handleKeysPressed :: GameState -> GameState
 handleKeysPressed gstate 
     = foldr keyHandler gstate (S.toList (keysPressed gstate))
 
+-- | Handles a single key, and updates the GameState. 
 keyHandler :: Key -> GameState -> GameState
 keyHandler (Char c) gstate
     = charKeyHandler c gstate
@@ -59,6 +78,7 @@ keyHandler (SpecialKey k) gstate
     = specialKeyHandler k gstate
 keyHandler _ gstate = gstate
 
+-- | Handles a single character key, and updates the GameState.
 charKeyHandler :: Char -> GameState -> GameState
 charKeyHandler 'p'  gstate = togglePause gstate
 charKeyHandler 'w'  gstate = mapGhosts gstate (flip setDirection North)
@@ -74,10 +94,9 @@ charKeyHandler '7'  gstate =
     (setGameStateGhostPlayer (pinky gstate)  . setGhostsComputerControlled) gstate
 charKeyHandler '6'  gstate =
     (setGameStateGhostPlayer (clyde gstate)  . setGhostsComputerControlled) gstate
-
-
 charKeyHandler _    gstate = gstate
 
+-- | Handles a special key, and updates the GameState.
 specialKeyHandler :: SpecialKey -> GameState -> GameState
 specialKeyHandler KeyUp    gstate = updatePacManDirection' North gstate
 specialKeyHandler KeyDown  gstate = updatePacManDirection' South gstate
@@ -85,22 +104,25 @@ specialKeyHandler KeyLeft  gstate = updatePacManDirection' West  gstate
 specialKeyHandler KeyRight gstate = updatePacManDirection' East  gstate
 specialKeyHandler _        gstate = gstate 
 
+-- | Updates the direction where PacMan is going.
 updatePacManDirection' :: Direction -> GameState -> GameState
 updatePacManDirection' d gstate = 
     gstate{pacman = updatePacManDirection d (pacman gstate) (maze gstate)}
 
-
+-- | Handles all the received events. 
 input :: Event -> GameState -> IO GameState
 input keyEvent@EventKey{} gstate
     = return (updateKeysInput keyEvent gstate)
 input _ gstate = return gstate
 
+-- | Adds a key to the keysPressed when Down, and deletes the key if Up.
 updateKeysInput :: Event -> GameState -> GameState
 updateKeysInput (EventKey k Down   _ _) gstate 
     = gstate { keysPressed = S.insert k (keysPressed gstate) }
 updateKeysInput (EventKey k Up _ _) gstate 
     = gstate { keysPressed = S.delete k (keysPressed gstate) }
 
+-- | Toggle the pause state. 
 togglePause :: GameState -> GameState
 togglePause gstate@GameState{runState=Paused} = gstate {runState=Normal}
 togglePause gstate@GameState{runState=Normal} = gstate {runState=Paused}
