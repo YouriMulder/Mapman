@@ -1,94 +1,33 @@
-# Mapman
-Pacman clone
+# MapMan
+The game MapMan is a clone of PacMan. Gather all the dots and pellets in the maze.
 
-## Game state
-```Haskell
-data MapMan = MapMap {
-  maze      :: Maze,
-  pacman    :: PacMan,
-  blinky    :: Ghost,
-  pinky     :: Ghost,
-  inky      :: Ghost,
-  clyde     :: Ghost,
-  score     :: Int,
-  highScore :: Int,
-  lives     :: Int
-}
-```
+Read the design document for more detailed description of how to create a maze, how to control the enities, and how the program is structured.
 
-# The Maze
-```Haskell
-data Point = Point Float Float
-type Maze  = Map Point Field
-```
+## Controls
+- p = Pause the game
 
-Inside the maze we store the fields as follows
-```Haskell
-data Field = Empty
-           | Wall
-           | Palette
-           | Fruit
-```
+### PacMan
+- Arrow keys = pacman movement
 
-## Pacman and the ghosts
-```Haskell
-data PMState      = Normal | Powered 
-data GhostState   = Normal | Scared
-data GhostName    = Pinky | Inky | Blinky | Clyde
-data GhostControl = Computer | Player
+### Ghosts
+#### Switch to player controller Ghost
+- 0 = All ghosts are now player controlled
+- 9 = Player controls Blinky
+- 8 = Player controls Inky
+- 7 = Player controls Pinky
+- 6 = Player controls Clyde
 
-data PacMan     = PacMan Point PMState
-data Ghost      = Ghost Point GhostName GhostControl GhostState 
+#### How to move the Ghost
+Be aware the Ghost still moves though the Grid when not pressing a single button. You can influence the ghosts decision making by pressing the controls.
 
-class Sprite s where
-  move :: s -> Point -> s  -- point is PacMan's position
+w = Move Up    on the next intersection.
+a = Move Left  on the next intersection.
+s = Move Down  on the next intersection.
+d = Move Right on the next intersection.
 
-instance Sprite PacMan where
-  move = (IO stuff)
-
-instance Sprite Ghost where
-  move (Ghost _ Pinky  _ _) = (Pinky's moving strategy)
-  move (Ghost _ Blinky _ _) = (Blinky's moving strategy)
-  ...
-```
-
-# Design
-## 2.4 Implementation of the Minimum Requirements
-**Player** <br />
-    The user controls Pacman using the arrow keys. <br />
-**Enemies** <br />
-    In the game are mulitple enemies. <br />
-    The enemies are the ghosts named: blinky, pinky, inky andclyde. <br />
-**Randomness** <br />
-    Once all the pallets are eaten, the game will continue as an endless mode. <br />
-    The pallets will be placed at a random time on a random location. <br />
-**Animation** <br />
-    When fruit is comsumed by Pacman the ghost will start to flicker. <br />
-    A long as the animation is present the ghosts can be eaten by pacman. <br />
-**Pause** <br />
-    Pressing ESC will pause the game, the game will continue when ESC is pressed again. <br />
-**Interaction with the file system** <br />
-    The interaction with the file system will be implemented by storing the maze as a file. <br />
-    The maze will be loaded on startup. <br />
-    
-
-## 2.5 Implementation of the optional Requirements
-We are planning to implement the following optional requirements. <br />
-**Custom levels** <br />
-    - We will implement custom levels, the custom levels will be loaded from a file. <br />
-    - The custom maze must be the same dimentions as the original maze. <br />
-    - Fields which are left empty (space) will be filled with walls. <br />
-    - If a row or column does not have a ending or starting wall then there must NOT be a wall on the opposite. <br />
-    Empty           = e <br />
-    Wall            = w <br />
-    Palette         = p <br />
-    Fruit           = f <br />
-    Pacman location = P <br />
-    Ghost house     = G <br />
-
-**Use JSON to save the full game state.** <br />
-    - We will implement a way to store the current gamestate to a file. <br />
-    - We will implement a way to load a gamestate stored in a file. <br />
-
-**Multiplayer** <br />
-    - The red ghosts can optionally be controlled by another player using WASD as input.  <br />
+### HUD
+On the top and bottom of the screen you can see the following inforamtion
+- Top left     = current score
+- Top right    = high score
+- Bottom left  = PacMan current Lives
+- Bottom right = None if no player2 is active, And the name of the ghost when a player2 is active.
