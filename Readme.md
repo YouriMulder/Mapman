@@ -20,10 +20,10 @@ Read the design document for more detailed description of how to create a maze, 
 #### How to move the Ghost
 Be aware the Ghost still moves though the Grid when not pressing a single button. You can influence the ghosts decision making by pressing the controls.
 
-w = Move Up    on the next intersection.
-a = Move Left  on the next intersection.
-s = Move Down  on the next intersection.
-d = Move Right on the next intersection.
+- w = Move Up    on the next intersection.
+- a = Move Left  on the next intersection.
+- s = Move Down  on the next intersection.
+- d = Move Right on the next intersection.
 
 ### HUD
 On the top and bottom of the screen you can see the following inforamtion
