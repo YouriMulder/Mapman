@@ -8,14 +8,15 @@ import Data.Aeson
 
 {- BASE DATA -}
 
--- default point datatype
+-- | Default point datatype
 data Point = Point Int Int
     deriving (Generic, ToJSON, FromJSON, Ord, Eq, Show)
 
--- order is needed for determining ghost move decision
+-- | Order is needed for determining ghost move decision
 data Direction = North | West | South | East
     deriving (Generic, ToJSON, FromJSON, Eq, Ord, Show, Enum)
 
+-- | Returns all the Direcions possible.
 directions :: [Direction]
 directions = [North, West, South, East]
 

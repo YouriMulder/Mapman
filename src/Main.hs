@@ -3,20 +3,29 @@
 module Main where
 
 import Model
-import ModelBase
-import ModelPacMan
+    ( GameState(GameState, maze, pacman, pinky, inky, blinky, clyde,
+                score, highScore, lives, runState, keysPressed, initialMaze),
+      RunState(Paused),
+      fps )
+import ModelBase ( Direction(West) )
+import ModelPacMan ( PacMan(PacMan), maxLives )
 import ModelGhost
-import ModelMaze
-import ModelWindow
+    ( Ghost(Ghost),
+      GhostControl(Computer),
+      GhostName(Clyde, Pinky, Inky, Blinky) )
+import ModelMaze ( Field(GhostHouse, PacmanStart) )
+import ModelWindow ( windowWidth, windowHeight )
 
 import Maze
-import Controller
-import ControllerGhost
-import View
-import Serial
+    ( defaultMaze, stringToMaze, find, ghostInitialLook, validMaze )
+import Controller ( step, input )
+import ControllerGhost ( refreshScatter )
+import View ( view )
+import Serial ( levelFile, initializeSerial )
 
 import qualified Data.Set as S
 import Graphics.Gloss.Interface.IO.Game
+    ( black, playIO, Display(InWindow) )
 
 main :: IO()
 main = do 

@@ -1,11 +1,26 @@
 module ControllerGhost where
 
-import Model 
-import ModelBase
+import Model
+    ( GameState(GameState, pinky, inky, clyde, pacman, maze, blinky),
+      Controllable(..),
+      GridLocated(getLocation, setLocation),
+      fps,
+      mapGhosts ) 
+import ModelBase ( Direction(..), Point(..), opposite )
 import ModelGhost
-import ModelPacMan
+    ( Ghost(..),
+      GhostControl(Player, Computer),
+      GhostName(..),
+      GhostState(..) )
+import ModelPacMan ( PacMan(..) )
 import ModelMaze
-import Maze
+    ( Maze,
+      Field(GhostHouse),
+      mazeAmountOfCellsWidth,
+      mazeAmountOfCellsHeight,
+      dist,
+      moveFrom )
+import Maze ( find, validMoves )
 
 import Data.List ( minimumBy )
 
@@ -14,7 +29,6 @@ instance Controllable Ghost where
     setDirection g@Ghost{gcontrol=(Player _)} d = g{gcontrol=Player d}
 
 instance GridLocated Ghost where
-    move = undefined
     getLocation Ghost{gpos=gp} = gp
     setLocation (Ghost _ gdir gname gcontrol gstate) position =
         Ghost position gdir gname gcontrol gstate

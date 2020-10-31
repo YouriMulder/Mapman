@@ -5,6 +5,7 @@ import ModelMaze
 import ModelGhost
 import Graphics.Gloss
 
+-- | The sprite instance for a ghost used to render a ghost.
 instance Sprite Ghost where 
     render g = Color (getGhostColor g) $ circleSolid cellRadius
         where 
