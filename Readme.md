@@ -34,5 +34,5 @@ On the top and bottom of the screen you can see the following inforamtion
 
 
 ### Save games
-- F1 - F5 = Store a gamesave in slot 1 - 5.
-- 1  - 5 = Load a gamesave from slot 1 - 5.
+- F1 - F5 = Store a save game in slot 1 - 5.
+- 1  - 5 = Load a save game from slot 1 - 5.
