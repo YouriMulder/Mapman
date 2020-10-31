@@ -9,16 +9,18 @@ import Data.Aeson
 import ModelBase
 
 {- SPRITE DATA -}
-data GhostState   = Scatter Int                     -- Ghost's state.
-                  | Scary   Int                     -- Ghosts are scattering for a certain number of seconds, then chasing for a certain number of seconds
+data GhostState   = Scatter Int  -- Ghost's state.
+                  | Scary   Int  -- Ghosts are scattering for a certain number of frames, then chasing for a certain number of frames
                   | Scared  Int
                   | Dead
                 deriving (Generic, ToJSON, FromJSON, Show)
+
 data GhostName    = Pinky | Inky | Blinky | Clyde
                 deriving (Generic, ToJSON, FromJSON, Show, Enum)
+
 data GhostControl = Computer 
                   | Player Direction  -- holds direction pressed by the player
-                deriving (Generic, ToJSON, FromJSON, Show)
+                deriving (Generic, ToJSON, FromJSON, Show, Eq)
 
 data Ghost  = Ghost {
     gpos     :: ModelBase.Point,
@@ -28,6 +30,3 @@ data Ghost  = Ghost {
     gstate   :: GhostState
 }
     deriving (Show)
-
-ghostKillScore :: Int
-ghostKillScore = 100

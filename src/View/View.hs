@@ -5,14 +5,13 @@ import ModelMaze
 import ModelBase
 import ModelWindow
 import ModelGhost
-import ControllerPacMan
-import ControllerGhost
-import ViewPacMan
-import ViewGhost
-import ViewMaze
+import ControllerPacMan()
+import ControllerGhost()
+import ViewPacMan()
+import ViewGhost()
+import ViewMaze()
 import Maze
 
-import Data.List
 import Graphics.Gloss
 
 view :: GameState -> IO Picture
@@ -24,18 +23,18 @@ viewPure gState = renderedMaze
         
         renderedMaze = 
             Translate 0 ((windowBotPadding/2)-(windowTopPadding/2)) $
-            Pictures [vMaze, vPacMan, vBlinky, vPinky, vInky, vClyde, vRState, vScore, vHighScore, vLives, vPlayer2]
-        vMaze   = renderMaze        $ maze      gState
-        vPacMan = renderGridLocated $ pacman    gState
-        vBlinky = renderGridLocated $ blinky    gState
-        vPinky  = renderGridLocated $ pinky     gState
-        vInky   = renderGridLocated $ inky      gState
-        vClyde  = renderGridLocated $ clyde     gState
-        vRState = renderRunState    $ runState  gState
-        vScore  = renderScore       $ score     gState
-        vHighScore = renderHighScore$ highScore gState 
-        vLives  = renderLives       $ lives     gState
-        vPlayer2 = renderPlayer2                gState
+            Pictures [vMaze, vBlinky, vPinky, vInky, vClyde, vPacMan, vRState, vScore, vHighScore, vLives, vPlayer2]
+        vMaze      = renderMaze        $ maze      gState
+        vPacMan    = renderGridLocated $ pacman    gState
+        vBlinky    = renderGridLocated $ blinky    gState
+        vPinky     = renderGridLocated $ pinky     gState
+        vInky      = renderGridLocated $ inky      gState
+        vClyde     = renderGridLocated $ clyde     gState
+        vRState    = renderRunState    $ runState  gState
+        vScore     = renderScore       $ score     gState
+        vHighScore = renderHighScore   $ highScore gState 
+        vLives     = renderLives       $ lives     gState
+        vPlayer2   = renderPlayer2                 gState
 
 renderPlayer2 :: GameState -> Picture
 renderPlayer2 gstate = case playerControlledGhosts gstate of
@@ -45,40 +44,36 @@ renderPlayer2 gstate = case playerControlledGhosts gstate of
                 Scale 0.10 0.10 $ 
                 Text ("Player 2 " ++ show (gname x))
 
+renderTextOverlay :: (Float, Float) -> Float -> String -> Picture
+renderTextOverlay (x, y) s text = 
+    Color white $
+    Translate x y $
+    Scale s s $ 
+    Text text
 
 renderLives :: Int -> Picture
 renderLives lives = 
-    Color white $
-    Translate (-windowWidth/2) ((-windowHeight/2) + (windowBotPadding*0.2)) $
-    Scale 0.10 0.10 $ 
-    Text ("lives " ++ show lives)
+    renderTextOverlay (x, y) 0.1 $ "lives " ++ show lives
+    where x = -windowWidth/2
+          y = (-windowHeight/2) + (windowBotPadding*0.2)
 
 renderHighScore :: Int -> Picture
 renderHighScore highScore = 
-    Color white $
-    Translate 0 ((windowHeight/2) - (windowTopPadding*0.8)) $
-    Scale 0.10 0.10 $ 
-    Text ("HighScore " ++ show highScore)
+    renderTextOverlay (x, y) 0.1 $ "HighScore " ++ show highScore
+    where x = 0
+          y = (windowHeight/2) - (windowTopPadding*0.8)
 
 renderScore :: Int -> Picture
 renderScore score = 
-    Color white $
-    Translate (-windowWidth/2) ((windowHeight/2) - (windowTopPadding*0.8)) $
-    Scale 0.10 0.10 $ 
-    Text ("Score " ++ show score)
-
-renderTextOverlay :: Float -> String -> Picture
-renderTextOverlay x s = 
-    Color white $
-    Translate x 0 $
-    Scale 0.2 0.2 $ 
-    Text s
+    renderTextOverlay (x, y) 0.1 $ "Score " ++ show score
+    where x = -windowWidth/2
+          y = (windowHeight/2) - (windowTopPadding*0.8)
 
 renderRunState :: RunState -> Picture
-renderRunState Paused       = renderTextOverlay (-125) "Press p to continue"
-renderRunState (Death n)    = renderTextOverlay (-75) $ "You Died (" ++ show ((n + fps - 1) `div` fps) ++ "...)"
-renderRunState (GameOver n) = renderTextOverlay (-75) $ "Game Over (" ++ show ((n + fps - 1) `div` fps) ++ "...)"
-renderRunState (Victory n)  = renderTextOverlay (-75) $ "You Won! (" ++ show ((n + fps - 1) `div` fps) ++ "...)"
+renderRunState Paused       = renderTextOverlay (-125, 0) 0.2   "Press p to continue"
+renderRunState (Death n)    = renderTextOverlay (-75, 0)  0.2 $ "You Died ("  ++ show ((n + fps - 1) `div` fps) ++ "...)"
+renderRunState (GameOver n) = renderTextOverlay (-75, 0)  0.2 $ "Game Over (" ++ show ((n + fps - 1) `div` fps) ++ "...)"
+renderRunState (Victory n)  = renderTextOverlay (-75, 0)  0.2 $ "You Won! ("  ++ show ((n + fps - 1) `div` fps) ++ "...)"
 renderRunState Normal       = Blank
 
 renderMaze :: Maze -> Picture

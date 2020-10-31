@@ -9,6 +9,8 @@ import State
 import Maze
 import ControllerGhost
 
+instance Controllable PacMan where
+    setDirection pm d = pm{pdir=d}
 
 instance GridLocated PacMan where
     move = undefined
@@ -19,19 +21,14 @@ updatePacMan :: GameState -> GameState
 updatePacMan gstate = gstate{pacman = movePacMan (pacman gstate) gstate}
 
 movePacMan :: PacMan -> GameState -> PacMan
-movePacMan pacMan@(PacMan pPosition pDirection) GameState{maze=m} = 
-    case isValidDirection pDirection pPosition m of
-        True -> PacMan (moveFrom pPosition pDirection) pDirection
-        False -> pacMan
+movePacMan pacMan@(PacMan pPosition pDirection) GameState{maze=m} 
+        | isValidDirection pDirection pPosition m = pacMan{ppos=moveFrom pPosition pDirection}
+movePacMan pacMan                               _ = pacMan            
 
 updatePacManDirection :: Direction -> PacMan -> Maze -> PacMan
-updatePacManDirection direction pacMan@(PacMan pPosition _) m =
-    case isValidDirection direction pPosition m of
-        True -> setPacManDirection direction pacMan
-        _    -> pacMan
-
-setPacManDirection :: Direction -> PacMan -> PacMan
-setPacManDirection direction (PacMan pPosition _) = PacMan pPosition direction
+updatePacManDirection direction pacMan@(PacMan pPosition _) m 
+        | isValidDirection direction pPosition m              = setDirection pacMan direction
+updatePacManDirection _         pacMan                      _ = pacMan
 
 -- Dies at 1 because of decrement in this function
 pacManDeath :: GameState -> GameState

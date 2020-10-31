@@ -61,6 +61,7 @@ instance FromJSON Ghost where
 
 instance ToJSON GameState where
     toJSON gs = object [
+            -- use our custom mazeToString method to dump the maze for extra pretty (and way smaller) save states:
             "maze"       .= lines (mazeToString (maze gs)),
             "pacman"     .= toJSON (pacman gs),
             "blinky"     .= toJSON (blinky gs),
@@ -103,15 +104,20 @@ instance FromJSON GameState where
             initialMaze = stringToMaze $ unlines initialMazeString
         }
 
+directory :: String
 directory = "./data"
+
+levelFile :: String
 levelFile      = directory ++ "/level.mm"
 
 initializeSerial :: IO()
 initializeSerial = do
     workingDirectory <- getCurrentDirectory
 
+    -- report the working directory so we know where stuff is
     putStrLn $ "Working directory: " ++ show workingDirectory
 
+    -- create data directory if it doesnt exist
     directoryExists <- doesDirectoryExist directory
     if not directoryExists then
         do
@@ -121,6 +127,7 @@ initializeSerial = do
     else
         putStrLn "Found data directory"
 
+    -- create level.mm file if it doesnt exist, with the default maze in it
     fileExists <- doesFileExist levelFile
     if not fileExists then
         do 
@@ -145,6 +152,7 @@ loadState :: Int -> IO (Maybe GameState)
 loadState slot = do
     let fileName = slotName slot
 
+    -- we don't want to crash if the file does not exist
     fileExists <- doesFileExist fileName
     if not fileExists  then do
         putStrLn $ "Save state slot " ++ show slot ++ " does not exist"
@@ -171,6 +179,7 @@ getSlotID _          = error "Invalid save slot requested"
 -- these actions require IO interaction, so we can't handle them in pure keyhandler functions anyway
 -- that's why we check this here
 checkDumpState :: GameState -> IO()
+-- dump gamestate to a save state slot if it is requested
 checkDumpState gstate | S.size dumpKeys > 0 = do
         dumpState gstate $ getSlotID $ S.findMin dumpKeys
     where
@@ -178,6 +187,7 @@ checkDumpState gstate | S.size dumpKeys > 0 = do
 checkDumpState _                            = return ()
 
 checkLoadState :: GameState -> IO GameState
+-- load gamestate from a gamestate slot if requested
 checkLoadState gstate | S.size loadKeys > 0 =
      do
         let loadKey = S.findMin loadKeys
